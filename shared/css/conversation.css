@@ -97,7 +97,7 @@ html[dir="rtl"] .conversation-toolbar-media-btn-group-box > button:first-child:h
 
 /* conversationViews.jsx */
 
-.conversation-toolbar .btn-hangup {
+.btn-hangup {
   background-image: url("../img/exit.svg");
   border: 0;
 }

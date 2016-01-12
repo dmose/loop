@@ -25,6 +25,17 @@ body,
   background: #000;
 }
 
+.standalone-info-bar > .btn-hangup {
+  width: 40px;
+  height: 40px;
+  margin-left: 5px;
+  background-size: 16px 16px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url("/shared/img/icons-16x16.svg#leave"); /* XXX chrome */
+  background-color: #c33c32;
+}
+
 /* Logos */
 
 .loop-logo-text {
@@ -55,39 +66,46 @@ body,
   pointer-events: none;
 }
 
-.standalone-overlay-wrapper > .hello-logo {
+.standalone-info-bar {
+  display: flex;
+  background: #fbfbfb;
+  height: 40px;
+  align-items: center;
+}
+
+.standalone-info-bar > .hello-logo {
   width: 120px;
   height: 19px;
+  margin-left: 15px;
+  margin-right: 15px;
   background-image: url("../../shared/img/hello_logo.svg");
   background-size: contain;
   background-repeat: no-repeat;
-  position: absolute;
-  left: 0;
-  top: 0;
 }
 
-html[dir="rtl"] .standalone-overlay-wrapper > .hello-logo {
-  right: 0;
-  left: auto;
+.standalone-info-bar-spacer {
+  flex: 1;
+}
+.standalone-info-bar > .general-support-url {
+  pointer-events: auto; /* XXX do we still need this? */
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 5px;
 }
 
-.standalone-overlay-wrapper > .general-support-url {
-  position: absolute;
-  top: 0;
-  right: 0;
-  pointer-events: auto;
+/* highlight on hover */
+.standalone-info-bar > .general-support-url:hover {
+  background-color: rgba(51, 51, 51, 0.1);
 }
 
-html[dir="rtl"] .standalone-overlay-wrapper > .general-support-url {
-  left: 0;
-  right: auto;
-}
-
-.standalone-overlay-wrapper .icon-help {
-  background-size: contain;
+.general-support-url > .icon-help {
   width: 16px;
   height: 16px;
-  background: transparent url("../shared/img/glyph-help-16x16.svg") no-repeat;
+  background: transparent url("../shared/img/glyph-help-no-circle-16x16.svg")
+    no-repeat;
 }
 
 .standalone-overlay-wrapper > .standalone-moz-logo {
@@ -101,6 +119,11 @@ html[dir="rtl"] .standalone-overlay-wrapper > .general-support-url {
 html[dir="rtl"] .standalone-overlay-wrapper > .standalone-moz-logo {
   left: 0;
   right: auto;
+}
+
+ /* account for the height of the standalone infobar */
+.media-layout {
+  height: calc(100% - 40px);
 }
 
 .btn-large {
