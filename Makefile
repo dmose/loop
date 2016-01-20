@@ -1,4 +1,5 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
+# This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
@@ -31,7 +32,7 @@ node_modules: package.json
 # build the dist dir, which contains a production version of the code and
 # assets
 .PHONY: dist
-dist: build dist_xpi dist_export
+dist: build dist_xpi dist_export dist_standalone
 
 .PHONY: distclean
 distclean: clean
@@ -276,10 +277,10 @@ add-on_dist: $(DIST)/add-on/chrome/content/preferences/prefs.js
 	mv $(DIST)/add-on/chrome/content/shared/vendor/react-prod.js \
 	   $(DIST)/add-on/chrome/content/shared/vendor/react.js
 
-.PHONY: standalone_dist
-standalone_dist:
-	mkdir -p $(DIST)
-	$(RSYNC) content/* $(DIST)
+.PHONY: dist_standalone
+dist_standalone:
+	mkdir -p $(DIST)/standalone
+	$(RSYNC) $(BUILT)/standalone/content/* $(DIST)/standalone
 	NODE_ENV="production" $(NODE_LOCAL_BIN)/webpack \
 	  -p -v --display-errors
 	sed 's#webappEntryPoint.js#js/standalone.js#' \
