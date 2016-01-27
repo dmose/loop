@@ -409,8 +409,14 @@ loop.standaloneRoomViews = (function(mozL10n) {
       };
     },
 
-    /* XXX make more readable.  get rid of call hangup-entry something else
-     * so we don't reuse the conversation.css stuff? */
+    renderButtons: function() {
+      return (
+        <sharedViews.HangUpControlButton
+          action={this.props.leaveRoom}
+          title={mozL10n.get("rooms_leave_button_label")}/>
+      );
+    },
+
     render: function() {
       var showButtons = this.props.video.visible || this.props.audio.visible;
 
@@ -419,10 +425,7 @@ loop.standaloneRoomViews = (function(mozL10n) {
           <div className="hello-logo"></div>
           <div className="standalone-info-bar-spacer"></div>
           <GeneralSupportURL dispatcher={this.props.dispatcher} />
-          {showButtons ? <sharedViews.HangUpControlButton
-                           action={this.props.leaveRoom}
-                           title={mozL10n.get("rooms_leave_button_label")}/>
-                       : null}
+          {showButtons ? this.renderButtons() : null}
         </div>
         );
     }
