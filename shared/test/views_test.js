@@ -43,6 +43,51 @@ describe("loop.shared.views", function() {
     LoopMochaUtils.restore();
   });
 
+  describe("AudioMuteButton", function() {
+
+    it("should set the muted class when not enabled", function() {
+      var comp = TestUtils.renderIntoDocument(
+        React.createElement(sharedViews.AudioMuteButton, {
+          enabled: false
+        }));
+
+      var node = comp.getDOMNode();
+      expect(node.classList.contains("muted")).eql(true);
+    });
+
+    it("should not set the muted class when enabled", function() {
+      var comp = TestUtils.renderIntoDocument(
+        React.createElement(sharedViews.AudioMuteButton, {
+          enabled: true
+        }));
+
+      var node = comp.getDOMNode();
+      expect(node.classList.contains("muted")).eql(false);
+    });
+
+    it("should dispatch SetMute('audio', true) if clicked when disabled",
+      function() {
+        var comp = TestUtils.renderIntoDocument(
+          React.createElement(sharedViews.AudioMuteButton, {
+            dispatcher: dispatcher,
+            enabled: false
+          }));
+        TestUtils.Simulate.click(comp.getDOMNode());
+
+        sinon.assert.calledOnce(dispatcher.dispatch);
+        sinon.assert.calledWithExactly(dispatcher.dispatch,
+          new sharedActions.SetMute({ type: "audio", enabled: true })
+        );
+      });
+
+    it.skip("should dispatch SetMute('audio', false) if clicked when enabled",
+      function() {
+      });
+
+    it("should display classname whatever");
+    it("should not set classname when disabled");
+
+  });
   describe("MediaControlButton", function() {
     it("should render an enabled local audio button", function() {
       var comp = TestUtils.renderIntoDocument(

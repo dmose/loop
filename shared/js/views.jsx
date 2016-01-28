@@ -240,6 +240,28 @@ loop.shared.views = (function(_, mozL10n) {
     }
   });
 
+  var AudioMuteButton = React.createClass({
+    propTypes: {
+      dispatcher: React.PropTypes.instanceOf(loop.Dispatcher),
+      enabled: React.PropTypes.bool.isRequired
+    },
+
+    toggleAudio: function() {
+      this.props.dispatcher.dispatch(
+        new sharedActions.SetMute({ type: "audio", enabled: true })
+      );
+    },
+
+    render: function() {
+      // XXX why does scope matter
+      return (
+        <MediaControlButton action={this.toggleAudio}
+                            enabled={this.props.enabled}
+                            scope="local"
+                            type="audio" />
+      );
+    }
+  });
   /**
    * Notification view.
    */
@@ -992,6 +1014,7 @@ loop.shared.views = (function(_, mozL10n) {
   });
 
   return {
+    AudioMuteButton: AudioMuteButton,
     AvatarView: AvatarView,
     Button: Button,
     ButtonGroup: ButtonGroup,
