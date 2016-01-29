@@ -65,23 +65,37 @@ describe("loop.shared.views", function() {
       expect(node.classList.contains("muted")).eql(false);
     });
 
-    it("should dispatch SetMute('audio', true) if clicked when disabled",
+    it("should dispatch SetMute('audio', false) if clicked when audio is disabled",
       function() {
         var comp = TestUtils.renderIntoDocument(
           React.createElement(sharedViews.AudioMuteButton, {
             dispatcher: dispatcher,
             enabled: false
           }));
+
+        TestUtils.Simulate.click(comp.getDOMNode());
+
+        sinon.assert.calledOnce(dispatcher.dispatch);
+        sinon.assert.calledWithExactly(dispatcher.dispatch,
+          new sharedActions.SetMute({ type: "audio", enabled: false })
+        );
+      });
+
+    it("should dispatch SetMute('audio', true) if clicked when audio is enabled",
+XXX switch property name to "muted" instead of "enabled"
+      function() {
+        var comp = TestUtils.renderIntoDocument(
+          React.createElement(sharedViews.AudioMuteButton, {
+            dispatcher: dispatcher,
+            enabled: true
+          }));
+
         TestUtils.Simulate.click(comp.getDOMNode());
 
         sinon.assert.calledOnce(dispatcher.dispatch);
         sinon.assert.calledWithExactly(dispatcher.dispatch,
           new sharedActions.SetMute({ type: "audio", enabled: true })
         );
-      });
-
-    it.skip("should dispatch SetMute('audio', false) if clicked when enabled",
-      function() {
       });
 
     it("should display classname whatever");
