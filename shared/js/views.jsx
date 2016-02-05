@@ -24,7 +24,7 @@ loop.shared.views = (function(_, mozL10n) {
 
     propTypes: {
       action: React.PropTypes.func.isRequired,
-      title: React.PropTypes.string
+      title: React.PropTypes.string.isRequired
     },
 
     handleClick: function() {
@@ -123,7 +123,7 @@ loop.shared.views = (function(_, mozL10n) {
     propTypes: {
       audio: React.PropTypes.object.isRequired,
       dispatcher: React.PropTypes.instanceOf(loop.Dispatcher).isRequired,
-      hangup: React.PropTypes.func.isRequired,
+      hangup: React.PropTypes.func,
       publishStream: React.PropTypes.func.isRequired,
       showHangup: React.PropTypes.bool,
       video: React.PropTypes.object.isRequired
@@ -240,6 +240,28 @@ loop.shared.views = (function(_, mozL10n) {
     }
   });
 
+  var AudioMuteButton = React.createClass({
+    propTypes: {
+      dispatcher: React.PropTypes.instanceOf(loop.Dispatcher),
+      enabled: React.PropTypes.bool.isRequired
+    },
+
+    toggleAudio: function() {
+      this.props.dispatcher.dispatch(
+        new sharedActions.SetMute({ type: "audio", enabled: true })
+      );
+    },
+
+    render: function() {
+      // XXX why does scope matter
+      return (
+        <MediaControlButton action={this.toggleAudio}
+                            enabled={this.props.enabled}
+                            scope="local"
+                            type="audio" />
+      );
+    }
+  });
   /**
    * Notification view.
    */
@@ -992,12 +1014,14 @@ loop.shared.views = (function(_, mozL10n) {
   });
 
   return {
+    AudioMuteButton: AudioMuteButton,
     AvatarView: AvatarView,
     Button: Button,
     ButtonGroup: ButtonGroup,
     Checkbox: Checkbox,
     ContextUrlView: ContextUrlView,
     ConversationToolbar: ConversationToolbar,
+    HangUpControlButton: HangUpControlButton,
     MediaControlButton: MediaControlButton,
     MediaLayoutView: MediaLayoutView,
     MediaView: MediaView,

@@ -394,6 +394,43 @@ loop.standaloneRoomViews = (function(mozL10n) {
     }
   });
 
+  var StandaloneInfoBar = React.createClass({
+    propTypes: {
+      audio: React.PropTypes.object.isRequired,
+      dispatcher: React.PropTypes.instanceOf(loop.Dispatcher).isRequired,
+      leaveRoom: React.PropTypes.func.isRequired,
+      video: React.PropTypes.object.isRequired
+    },
+
+    getDefaultProps: function() {
+      return {
+        video: { enabled: true, visible: true },
+        audio: { enabled: true, visible: true }
+      };
+    },
+
+    renderButtons: function() {
+      return (
+        <sharedViews.HangUpControlButton
+          action={this.props.leaveRoom}
+          title={mozL10n.get("rooms_leave_button_label")}/>
+      );
+    },
+
+    render: function() {
+      var showButtons = this.props.video.visible || this.props.audio.visible;
+
+      return (
+        <div className="standalone-info-bar">
+          <div className="hello-logo"></div>
+          <div className="standalone-info-bar-spacer"></div>
+          <GeneralSupportURL dispatcher={this.props.dispatcher} />
+          {showButtons ? this.renderButtons() : null}
+        </div>
+        );
+    }
+  });
+
   var StandaloneRoomView = React.createClass({
     mixins: [
       Backbone.Events,
@@ -609,6 +646,13 @@ loop.standaloneRoomViews = (function(mozL10n) {
 
       return (
         <div className="room-conversation-wrapper standalone-room-wrapper">
+          <StandaloneInfoBar
+            audio={{ enabled: !this.state.audioMuted,
+                     visible: this._roomIsActive() }}
+            dispatcher={this.props.dispatcher}
+            leaveRoom={this.leaveRoom}
+            video={{ enabled: !this.state.videoMuted,
+                     visible: this._roomIsActive() }} />
           <sharedViews.MediaLayoutView
             dispatcher={this.props.dispatcher}
             displayScreenShare={displayScreenShare}
@@ -638,9 +682,8 @@ loop.standaloneRoomViews = (function(mozL10n) {
               audio={{ enabled: !this.state.audioMuted,
                       visible: this._roomIsActive() }}
               dispatcher={this.props.dispatcher}
-              hangup={this.leaveRoom}
               publishStream={this.publishStream}
-              showHangup={true}
+              showHangup={false}
               video={{ enabled: !this.state.videoMuted,
                       visible: this._roomIsActive() }} />
           </sharedViews.MediaLayoutView>
@@ -657,8 +700,6 @@ loop.standaloneRoomViews = (function(mozL10n) {
     render: function() {
       return (
         <div className="standalone-overlay-wrapper">
-          <div className="hello-logo"></div>
-          <GeneralSupportURL dispatcher={this.props.dispatcher} />
           <img className="standalone-moz-logo" src="/img/mozilla-logo.svg#logo-white" />
         </div>
       );
@@ -727,6 +768,7 @@ loop.standaloneRoomViews = (function(mozL10n) {
 
   return {
     StandaloneHandleUserAgentView: StandaloneHandleUserAgentView,
+    StandaloneInfoBar: StandaloneInfoBar,
     StandaloneRoomControllerView: StandaloneRoomControllerView,
     StandaloneRoomFailureView: StandaloneRoomFailureView,
     StandaloneRoomInfoArea: StandaloneRoomInfoArea,

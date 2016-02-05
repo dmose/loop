@@ -270,28 +270,6 @@ describe("loop.standaloneRoomViews", function() {
     });
   });
 
-  describe("StandaloneRoomHeader", function() {
-    function mountTestComponent() {
-      return TestUtils.renderIntoDocument(
-        React.createElement(
-          loop.standaloneRoomViews.StandaloneOverlayWrapper, {
-            dispatcher: dispatcher
-          }));
-    }
-
-    it("should dispatch a RecordClick action when the support link is clicked", function() {
-      view = mountTestComponent();
-
-      TestUtils.Simulate.click(view.getDOMNode().querySelector("a"));
-
-      sinon.assert.calledOnce(dispatcher.dispatch);
-      sinon.assert.calledWithExactly(dispatcher.dispatch,
-        new sharedActions.RecordClick({
-          linkInfo: "Support link click"
-        }));
-    });
-  });
-
   describe("StandaloneRoomFailureView", function() {
     function mountTestComponent(extraProps) {
       var props = _.extend({
@@ -424,6 +402,50 @@ describe("loop.standaloneRoomViews", function() {
         done();
       });
     });
+  });
+
+  describe("StandaloneInfoBar", function() {
+
+    function mountTestComponent() {
+      return TestUtils.renderIntoDocument(
+        React.createElement(
+          loop.standaloneRoomViews.StandaloneInfoBar,
+          { dispatcher: dispatcher,
+            leaveRoom: function() {} }
+        )
+      );
+    }
+
+    beforeEach(function() {
+      view = mountTestComponent();
+    });
+
+    it("should dispatch a RecordClick action when the support link is clicked", function() {
+      view = mountTestComponent();
+
+      TestUtils.Simulate.click(view.getDOMNode().querySelector("a"));
+
+      sinon.assert.calledOnce(dispatcher.dispatch);
+      sinon.assert.calledWithExactly(dispatcher.dispatch,
+        new sharedActions.RecordClick({
+          linkInfo: "Support link click"
+        }));
+    });
+
+    it("should display the hello-logo element", function() {
+      view = mountTestComponent();
+
+      expect(view.getDOMNode().querySelector(".hello-logo"))
+        .instanceOf(HTMLDivElement);
+    });
+
+    it("should display the .hangup button", function() {
+      view = mountTestComponent();
+
+      expect(view.getDOMNode().querySelector(".hello-logo"))
+        .instanceOf(HTMLDivElement);
+    });
+
   });
 
   describe("StandaloneRoomView", function() {
