@@ -671,10 +671,21 @@
   });
 
   var App = React.createClass({
-
     render: function() {
       return (
         <ShowCase>
+          // Bug 1245666 - select & style or implement react slideshow component
+          <Section name="FTESlideShow">
+            <p className="note">
+              <strong>Note:</strong> 332px wide.
+            </p>
+            <FramedExample cssClass="fx-embedded-panel"
+                           dashed={true}
+                           height={450}
+                           summary="First time experience Slideshow view"
+                           width={620} />
+          </Section>
+
           <Section name="PanelView">
             <p className="note">
               <strong>Note:</strong> 332px wide.

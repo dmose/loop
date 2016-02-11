@@ -1020,7 +1020,7 @@ const LoopAPIInternal = {
 
     Cu.import("resource://gre/modules/RemotePageManager.jsm");
 
-    gPageListeners = [new RemotePages("about:looppanel"), new RemotePages("about:loopconversation")];
+    gPageListeners = [new RemotePages("about:looppanel"), new RemotePages("about:loopconversation"), new RemotePages("chrome://loop/content/panels/slideshow.html")];
     for (let page of gPageListeners) {
       page.addMessageListener(kMessageName, this.handleMessage.bind(this));
     }

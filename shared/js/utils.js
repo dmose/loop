@@ -6,7 +6,8 @@
 
 var loop = loop || {};
 loop.shared = loop.shared || {};
-var inChrome = typeof Components != "undefined" && "utils" in Components;
+var inChrome = window.location.protocol === "about";
+// var inChrome = typeof Components != "undefined" && "utils" in Components;
 
 (function() {
   "use strict";
