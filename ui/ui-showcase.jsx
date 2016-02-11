@@ -681,12 +681,9 @@
             </p>
             <FramedExample cssClass="fx-embedded-panel"
                            dashed={true}
-                           summary="First time experience view"
-                           width={620}
-                           height={450} >
-              Slide show is here.
-
-            </FramedExample>
+                           height={450}
+                           summary="First time experience Slideshow view"
+                           width={620} />
           </Section>
 
           <Section name="PanelView">

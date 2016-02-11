@@ -9,7 +9,7 @@ loop.slideshow = (function(_, mozL10n) {
 // App state
   var state = {
     currentSlide: 0,
-    data        : []
+    data: []
   };
 
 // State transitions
@@ -32,7 +32,7 @@ loop.slideshow = (function(_, mozL10n) {
     },
     toggleSlide: function(id) {
       console.log("something worked");
-      var index = state.data.map(function (el) {
+      var index = state.data.map(function(el) {
         return (
           el.id
         );
@@ -41,9 +41,12 @@ loop.slideshow = (function(_, mozL10n) {
       state.currentSlide = currentIndex;
       render(state);
     }
-  }
+  };
 
   var Slideshow = React.createClass({
+    propTypes: {
+      data: React.PropTypes.object.isRequired
+    },
     render: function() {
       return (
         <div className="slideshow">
@@ -57,11 +60,20 @@ loop.slideshow = (function(_, mozL10n) {
   });
 
   var Slides = React.createClass({
+    propTypes: {
+      data: React.PropTypes.object.isRequired
+    },
     render: function() {
-      var slidesNodes = this.props.data.map(function (slideNode, index) {
+      var slidesNodes = this.props.data.map(function(slideNode, index) {
         var isActive = state.currentSlide === index;
         return (
-          <Slide active={isActive} key={slideNode.id} indexClass={slideNode.id} imageClass={slideNode.imageClass} imageAlt={slideNode.imageAlt} title={slideNode.title} text={slideNode.text} />
+          <Slide active={isActive}
+                 imageAlt={slideNode.imageAlt}
+                 imageClass={slideNode.imageClass}
+                 indexClass={slideNode.id}
+                 key={slideNode.id}
+                 text={slideNode.text}
+                 title={slideNode.title} />
         );
       });
       return (
@@ -73,11 +85,17 @@ loop.slideshow = (function(_, mozL10n) {
   });
 
   var Slide = React.createClass({
+    propTypes: {
+      active: React.PropTypes.bool.isRequired,
+      imageClass: React.PropTypes.string.isRequired,
+      indexClass: React.PropTypes.string.isRequired,
+      text: React.PropTypes.string.isRequired,
+      title: React.PropTypes.string.isRequired
+    },
     render: function() {
       var classes = React.addons.classSet({
-        'slide': true,
-
-        'slide--active': this.props.active
+        "slide": true,
+        "slide--active": this.props.active
       });
       return (
 
@@ -128,7 +146,7 @@ loop.slideshow = (function(_, mozL10n) {
     }
   });
 
-  function render(state) {
+  function render() {
     var hasData = state.data.length > 0;
     var component;
     if (hasData) {
@@ -200,34 +218,32 @@ loop.slideshow = (function(_, mozL10n) {
       document.documentElement.setAttribute("dir", mozL10n.language.direction);
       document.body.setAttribute("platform", loop.shared.utils.getPlatform());
 
-
-
         var data = [
           {
-            id         : "slide1",
-            imageClass : "slide1-image",
-            title      : mozL10n.get("fte_slide_1_title"),
-            text       : mozL10n.get("fte_slide_1_copy")
+            id: "slide1",
+            imageClass: "slide1-image",
+            title: mozL10n.get("fte_slide_1_title"),
+            text: mozL10n.get("fte_slide_1_copy")
             // title      : "Browse Web pages with a friend",
             // text       : "Whether you’re planning a trip or shopping for a gift, Hello lets you make faster decisions in real time."
           },
           {
-            id         : "slide2",
-            imageClass : "slide2-image",
-            title      : mozL10n.get("fte_slide_2_title"),
-            text       : mozL10n.get("fte_slide_2_copy")
+            id: "slide2",
+            imageClass: "slide2-image",
+            title: mozL10n.get("fte_slide_2_title"),
+            text: mozL10n.get("fte_slide_2_copy")
           },
           {
-            id         : "slide3",
-            imageClass : "slide3-image",
-            title      : mozL10n.get("fte_slide_3_title"),
-            text       : mozL10n.get("fte_slide_3_copy")
+            id: "slide3",
+            imageClass: "slide3-image",
+            title: mozL10n.get("fte_slide_3_title"),
+            text: mozL10n.get("fte_slide_3_copy")
           },
           {
-            id         : "slide4",
-            imageClass : "slide4-image",
-            title      : mozL10n.get("fte_slide_4_title"),
-            text       : mozL10n.get("fte_slide_4_copy")
+            id: "slide4",
+            imageClass: "slide4-image",
+            title: mozL10n.get("fte_slide_4_title"),
+            text: mozL10n.get("fte_slide_4_copy")
           }
         ];
       // Notify the window that we've finished initalization and initial layout
