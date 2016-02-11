@@ -101,11 +101,11 @@ loop.slideshow = (function(_, mozL10n) {
 
         <div className={classes}>
           <div className={this.props.indexClass}>
-          <div className="slide-layout">
-            <h2>{this.props.title}</h2>
-            <div className="slide-text">{this.props.text}</div>
-          </div>
-          <img className={this.props.imageClass} />
+            <div className="slide-layout">
+              <img className={this.props.imageClass} />
+              <h2>{this.props.title}</h2>
+              <div className="slide-text">{this.props.text}</div>
+            </div>
           </div>
         </div>
       );
