@@ -6,12 +6,6 @@ var loop = loop || {};
 loop.slideshow = (function(_, mozL10n) {
   "use strict";
 
-  // var sharedViews = loop.shared.views;
-  // var sharedModels = loop.shared.models;
-  // var sharedMixins = loop.shared.mixins;
-  // var sharedActions = loop.shared.actions;
-  // var Button = sharedViews.Button;
-
 // App state
   var state = {
     currentSlide: 0,
@@ -121,32 +115,6 @@ loop.slideshow = (function(_, mozL10n) {
     }
   });
 
-  //var Pagination = React.createClass({
-  //  render: function() {
-  //    var paginationNodes = this.props.data.map(function (paginationNode, index) {
-  //      return (
-  //        <Pager id={paginationNode.id} key={paginationNode.id} title={paginationNode.title}  />
-  //      );
-  //    });
-  //    return (
-  //      <div className="pagination">
-  //        {paginationNodes}
-  //      </div>
-  //    );
-  //  }
-  //});
-  //
-  //var Pager = React.createClass({
-  //  toggleSlide: function() {
-  //    actions.toggleSlide(this.props.id);
-  //  },
-  //  render: function() {
-  //    return (
-  //      <span className="pager" onClick={this.toggleSlide}>{this.props.title}</span>
-  //    );
-  //  }
-  //});
-
   var EmptyMessage = React.createClass({
     render: function() {
       return (
@@ -169,53 +137,6 @@ loop.slideshow = (function(_, mozL10n) {
       document.querySelector("#main")
     );
   }
-
-
-
-
-
-  //var GettingStartedView = React.createClass({
-  //  mixins: [sharedMixins.WindowCloseMixin],
-  //
-  //  handleButtonClick: function() {
-  //    loop.requestMulti(
-  //      ["OpenGettingStartedTour", "getting-started"],
-  //      ["SetLoopPref", "gettingStarted.latestFTUVersion", FTU_VERSION]
-  //    ).then(function() {
-  //        // XXX why are we dispatching this event here, as all it does is
-  //        // cause the pref to be re-read in to some React or Flux state?
-  //        // And even if we do need to do that, why not do it here directly?
-  //        var event = new CustomEvent("GettingStartedSeen");
-  //        window.dispatchEvent(event);
-  //      }.bind(this));
-  //    this.closeWindow();
-  //  },
-  //
-  //  render: function() {
-  //    return (
-  //      <div className="fte-get-started-content">
-  //        <div className="fte-title">
-  //          <img className="fte-logo" src="shared/img/hello_logo.svg" />
-  //          <div className="fte-subheader">
-  //            {mozL10n.get("first_time_experience_subheading2")}
-  //          </div>
-  //          <hr className="fte-separator"/>
-  //          <div className="fte-content">
-  //            {mozL10n.get("first_time_experience_content")}
-  //          </div>
-  //          <img className="fte-hello-web-share" src="shared/img/hello-web-share.svg" />
-  //        </div>
-  //        <div className="fte-button-container">
-  //          <Button additionalClass="fte-get-started-button"
-  //                  caption={mozL10n.get("first_time_experience_button_label2")}
-  //                  htmlId="fte-button"
-  //                  onClick={this.handleButtonClick} />
-  //        </div>
-  //      </div>
-  //    );
-  //  }
-  // });
-
 
   /**
    * Slideshow initialisation.
