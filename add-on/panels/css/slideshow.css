@@ -4,6 +4,7 @@
 html {
   font-size: 10px;
   font-family: menu;
+  color: #fff;
 }
 
 body {
@@ -28,6 +29,8 @@ body {
 }
 .slide {
   display: none;
+  height: 100%;
+  width:  100%;
 }
 .slide.slide--active {
   display: block;
@@ -65,21 +68,22 @@ body {
   right: 20px;
 
 }
-.pagination {
-  padding: 35px;
-  text-align: center;
-}
-.pager {
-  background-color: lightgray;
-  display: inline-block;
-  height: 10px;
-  margin: 10px;
-  overflow: hidden;
-  text-indent: -9000px;
-  white-space: nowrap;
-  width: 10px;
-  border-radius: 50%;
-}
+
+/*.pagination {*/
+  /*padding: 35px;*/
+  /*text-align: center;*/
+/*}*/
+/*.pager {*/
+  /*background-color: lightgray;*/
+  /*display: inline-block;*/
+  /*height: 10px;*/
+  /*margin: 10px;*/
+  /*overflow: hidden;*/
+  /*text-indent: -9000px;*/
+  /*white-space: nowrap;*/
+  /*width: 10px;*/
+  /*border-radius: 50%;*/
+/*}*/
 
 .button-close {
   display: block;
@@ -101,28 +105,89 @@ body {
 .slide-layout {
   padding-top: 90px;
   padding-left: 45px;
-  padding-right: 45px;
+  /*padding-right: 45px;*/
   padding-bottom: 20px;
+  width: 285px;
 }
 
-.slide1-image {
+.slide-layout h2 {
+  font-size: 2.8rem;
+  font-weight: 400;
+  white-space: normal;
+  color: #fff;
+  line-height: 3rem;
+  margin-bottom: 5px;
+}
+
+.slide-layout .slide-text {
+  font-size: 2rem;
+  white-space: normal;
+  color: #fff;
+  line-height: 2.8rem;
+}
+
+.slide img {
   display: block;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   position: absolute;
-  background-color: transparent;
-  background-image: url(../../shared/img/firefox-hello_tour-slide-01.svg);
-  background-repeat: no-repeat;
   border: none;
+  background-color: transparent;
+  background-repeat: no-repeat;
   padding: 0;
-  height: 300px;
-  width: 300px;
-  top: 60px;
-  right: 30px;
 }
-
 .slide1 {
   height: 100%;
   width:  100%;
   background: #06a6e0;
+}
+
+.slide1-image {
+  background-image: url(../../shared/img/firefox-hello_tour-slide-01.svg);
+  height: 320px;
+  width: 320px;
+  top: 40px;
+  right: 20px;
+}
+
+.slide2 {
+  height: 100%;
+  width:  100%;
+  background: #0183b2;
+}
+
+.slide2-image {
+  background-image: url(../../shared/img/firefox-hello_tour-slide-02.svg);
+  height: 320px;
+  width: 320px;
+  top: 40px;
+  right: 20px;
+}
+
+.slide3 {
+  height: 100%;
+  width:  100%;
+  background: #005da5;
+}
+
+.slide3-image {
+  background-image: url(../../shared/img/firefox-hello_tour-slide-03.svg);
+  height: 320px;
+  width: 320px;
+  top: 40px;
+  right: 20px;
+}
+
+.slide4 {
+  height: 100%;
+  width:  100%;
+  background: #7ec24c;
+}
+
+.slide4-image {
+  background-image: url(../../shared/img/firefox-hello_tour-slide-04.svg);
+  height: 320px;
+  width: 320px;
+  top: 40px;
+  right: 20px;
 }

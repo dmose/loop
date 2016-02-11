@@ -17,30 +17,26 @@ loop.panel = (function(_, mozL10n) {
     {
       id         : "slide1",
       imageClass : "slide1-image",
-      imageAlt   : "Slide 1 Image",
       //title      : mozL10n.get("fte_slide_1_title"),
       //text       : mozL10n.get("fte_slide_1_copy")
-      title      : "fte_slide_1_title",
-      text       : "fte_slide_1_copy"
+      title      : "Browse Web pages with a friend",
+      text       : "Whether you’re planning a trip or shopping for a gift, Hello lets you make faster decisions in real time."
     },
     {
       id         : "slide2",
-      imageClass  : "img2.jpg",
-      imageAlt   : "Slide 2 Image",
+      imageClass : "slide2-image",
       title      : "Slide 2",
       text       : "Slide 2 Image Text"
     },
     {
       id         : "slide3",
-      imageClass  : "img3.jpg",
-      imageAlt   : "Slide 3 Image",
+      imageClass : "slide3-image",
       title      : "Slide 3",
       text       : "Slide 3 Image Text"
     },
     {
       id         : "slide4",
-      imageClass  : "img4.jpg",
-      imageAlt   : "Slide 4 Image",
+      imageClass : "slide4-image",
       title      : "Slide 4",
       text       : "Slide 4 Image Text"
     },
@@ -131,7 +127,7 @@ loop.panel = (function(_, mozL10n) {
             <h2>{this.props.title}</h2>
             <div className="slide-text">{this.props.text}</div>
           </div>
-          <img className={this.props.imageClass} alt={this.props.imageAlt} />
+          <img className={this.props.imageClass} />
           </div>
         </div>
       );
