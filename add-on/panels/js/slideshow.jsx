@@ -3,7 +3,7 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 var loop = loop || {};
-loop.panel = (function(_, mozL10n) {
+loop.slideshow = (function(_, mozL10n) {
   "use strict";
 
   // var sharedViews = loop.shared.views;
@@ -12,41 +12,11 @@ loop.panel = (function(_, mozL10n) {
   // var sharedActions = loop.shared.actions;
   // var Button = sharedViews.Button;
 
-
-  var data = [
-    {
-      id         : "slide1",
-      imageClass : "slide1-image",
-      //title      : mozL10n.get("fte_slide_1_title"),
-      //text       : mozL10n.get("fte_slide_1_copy")
-      title      : "Browse Web pages with a friend",
-      text       : "Whether you’re planning a trip or shopping for a gift, Hello lets you make faster decisions in real time."
-    },
-    {
-      id         : "slide2",
-      imageClass : "slide2-image",
-      title      : "Slide 2",
-      text       : "Slide 2 Image Text"
-    },
-    {
-      id         : "slide3",
-      imageClass : "slide3-image",
-      title      : "Slide 3",
-      text       : "Slide 3 Image Text"
-    },
-    {
-      id         : "slide4",
-      imageClass : "slide4-image",
-      title      : "Slide 4",
-      text       : "Slide 4 Image Text"
-    },
-  ];
-
 // App state
   var state = {
     currentSlide: 0,
     data        : []
-  }
+  };
 
 // State transitions
   var actions = {
@@ -58,7 +28,7 @@ loop.panel = (function(_, mozL10n) {
         next = 0;
       }
       state.currentSlide = next;
-      render(state)
+      render(state);
     },
     togglePrev: function() {
       console.log("something worked");
@@ -244,83 +214,111 @@ loop.panel = (function(_, mozL10n) {
   //      </div>
   //    );
   //  }
-  //});
+  // });
 
 
   /**
    * Slideshow initialisation.
    */
   function init() {
+    console.log("in init");
+    var requests = [
+      ["GetAllConstants"],
+      ["GetAllStrings"],
+      ["GetLocale"],
+      ["GetPluralRule"]
+    ];
+    var prefetch = [
+      ["GetLoopPref", "gettingStarted.latestFTUVersion"],
+      ["GetLoopPref", "legal.ToS_url"],
+      ["GetLoopPref", "legal.privacy_url"],
+      ["GetLoopPref", "remote.autostart"],
+      ["GetUserProfile"],
+      ["GetFxAEnabled"],
+      ["GetDoNotDisturb"],
+      ["GetHasEncryptionKey"],
+      ["IsMultiProcessActive"]
+    ];
+    return loop.requestMulti.apply(null, requests.concat(prefetch)).then(function(results) {
+      console.log("in then");
+      // `requestIdx` is keyed off the order of the `requests` and `prefetch`
+      // arrays. Be careful to update both when making changes.
+      var requestIdx = 0;
+      // Do the initial L10n setup, we do this before anything
+      // else to ensure the L10n environment is setup correctly.
+      var stringBundle = results[++requestIdx];
+      var locale = results[++requestIdx];
+      var pluralRule = results[++requestIdx];
+      console.log("about to call initialize");
+      mozL10n.initialize({
+        locale: locale,
+        pluralRule: pluralRule,
+        getStrings: function(key) {
+          if (!(key in stringBundle)) {
+            console.error("No string found for key: ", key);
+            return "{ textContent: '' }";
+          }
 
-    //var requests = [
-    //  ["GetAllConstants"],
-    //  ["GetAllStrings"],
-    //  ["GetLocale"],
-    //  ["GetPluralRule"]
-    //];
-    //var prefetch = [
-    //  ["GetLoopPref", "gettingStarted.latestFTUVersion"],
-    //  ["IsMultiProcessEnabled"]
-    //];
-    //return loop.requestMulti.apply(null, requests.concat(prefetch)).then(function(results) {
-    //  // `requestIdx` is keyed off the order of the `requests` and `prefetch`
-    //  // arrays. Be careful to update both when making changes.
-    //  var requestIdx = 0;
-    //  var constants = results[requestIdx];
-    //  // Do the initial L10n setup, we do this before anything
-    //  // else to ensure the L10n environment is setup correctly.
-    //  var stringBundle = results[++requestIdx];
-    //  var locale = results[++requestIdx];
-    //  var pluralRule = results[++requestIdx];
-    //  mozL10n.initialize({
-    //    locale: locale,
-    //    pluralRule: pluralRule,
-    //    getStrings: function(key) {
-    //      if (!(key in stringBundle)) {
-    //        console.error("No string found for key: ", key);
-    //        return "{ textContent: '' }";
-    //      }
-    //
-    //      return JSON.stringify({ textContent: stringBundle[key] });
-    //    }
-    //  });
-    //
-    //  prefetch.forEach(function(req) {
-    //    req.shift();
-    //    loop.storeRequest(req, results[++requestIdx]);
-    //  });
-    //
-    //  var dispatcher = new loop.Dispatcher();
-      //var roomStore = new loop.store.RoomStore(dispatcher, {
-      //  notifications: notifications,
-      //  constants: constants
-      //});
+          return JSON.stringify({
+             textContent: stringBundle[key]
+           });
+        }
+      });
 
+      prefetch.forEach(function(req) {
+        req.shift();
+        loop.storeRequest(req, results[++requestIdx]);
+      });
 
-    //window.addEventListener("load", function() {
-    //  state.data = data;
-    //  render(state);
-    //});
-
-    state.data = data;
-    render(state);
-
-
-    setTimeout(function() {
-      state.data = data;
-      render(state);
-    }, 1000)
+      document.documentElement.setAttribute("lang", mozL10n.language.code);
+      document.documentElement.setAttribute("dir", mozL10n.language.direction);
+      document.body.setAttribute("platform", loop.shared.utils.getPlatform());
 
 
-      // document.documentElement.setAttribute("lang", mozL10n.language.code);
-      // document.documentElement.setAttribute("dir", mozL10n.language.direction);
-      // document.body.setAttribute("platform", loop.shared.utils.getPlatform());
 
+        var data = [
+          {
+            id         : "slide1",
+            imageClass : "slide1-image",
+            title      : mozL10n.get("fte_slide_1_title"),
+            text       : mozL10n.get("fte_slide_1_copy")
+            // title      : "Browse Web pages with a friend",
+            // text       : "Whether you’re planning a trip or shopping for a gift, Hello lets you make faster decisions in real time."
+          },
+          {
+            id         : "slide2",
+            imageClass : "slide2-image",
+            title      : mozL10n.get("fte_slide_2_title"),
+            text       : mozL10n.get("fte_slide_2_copy")
+          },
+          {
+            id         : "slide3",
+            imageClass : "slide3-image",
+            title      : mozL10n.get("fte_slide_3_title"),
+            text       : mozL10n.get("fte_slide_3_copy")
+          },
+          {
+            id         : "slide4",
+            imageClass : "slide4-image",
+            title      : mozL10n.get("fte_slide_4_title"),
+            text       : mozL10n.get("fte_slide_4_copy")
+          }
+        ];
       // Notify the window that we've finished initalization and initial layout
       // var evtObject = document.createEvent("Event");
       // evtObject.initEvent("loopPanelInitialized", true, false);
       // window.dispatchEvent(evtObject);
-    //});
+
+      // XXX new code starts here
+      state.data = data;
+      render(state);
+
+
+      setTimeout(function() {
+        state.data = data;
+        render(state);
+      }, 1000);
+    });
   }
 
   return {
@@ -330,4 +328,6 @@ loop.panel = (function(_, mozL10n) {
   };
 })(_, document.mozL10n);
 
-document.addEventListener("DOMContentLoaded", loop.panel.init);
+console.log("about to add DOMContentLoaded");
+document.addEventListener("DOMContentLoaded", loop.slideshow.init);
+console.log("added");
