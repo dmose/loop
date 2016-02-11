@@ -15,23 +15,19 @@ loop.slideshow = (function(_, mozL10n) {
 // State transitions
   var actions = {
     toggleNext: function() {
-      console.log("something worked");
       var current = state.currentSlide;
       var next = current + 1;
-      if (next > state.data.length - 1) {
-        next = 0;
+      if (next < state.data.length) {
+        state.currentSlide = next;
       }
-      state.currentSlide = next;
       render(state);
     },
     togglePrev: function() {
-      console.log("something worked");
       var current = state.currentSlide;
       var prev = current - 1;
-      if (prev < 0) {
-        prev = state.data.length - 1;
+      if (prev >= 0) {
+        state.currentSlide = prev;
       }
-      state.currentSlide = prev;
       render(state);
     },
     toggleSlide: function(id) {
@@ -106,10 +102,19 @@ loop.slideshow = (function(_, mozL10n) {
       actions.toggleNext();
     },
     render: function() {
+      var showPrev, showNext;
+      var current = state.currentSlide;
+      var last = state.data.length;
+      if (current > 0) {
+        showPrev = <div className="toggle toggle-prev" onClick={this.togglePrev}></div>;
+      }
+      if (current < last - 1) {
+        showNext = <div className="toggle toggle-next" onClick={this.toggleNext}></div>;
+      }
       return (
         <div className="controls">
-          <div className="toggle toggle-prev" onClick={this.togglePrev}></div>
-          <div className="toggle toggle-next" onClick={this.toggleNext}></div>
+          {showPrev}
+          {showNext}
         </div>
       );
     }
