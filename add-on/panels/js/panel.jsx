@@ -1116,14 +1116,7 @@ loop.panel = (function(_, mozL10n) {
 
       if (!this.props.gettingStartedSeen || !this.state.gettingStartedSeen) {
         return (
-          <div className="fte-get-started-container"
-               onContextMenu={this.handleContextMenu}>
-            <NotificationListView
-              clearOnDocumentHidden={true}
-              notifications={this.props.notifications} />
-            <GettingStartedView />
-            <ToSView />
-          </div>
+          <FTEView notifications={this.props.notifications} />
         );
       }
       if (!this.state.hasEncryptionKey) {
@@ -1145,6 +1138,47 @@ loop.panel = (function(_, mozL10n) {
               <SettingsDropdown />
             </div>
           </div>
+        </div>
+      );
+    }
+  });
+
+  var FTEView = React.createClass({
+    propTypes: {
+      notifications: React.PropTypes.instanceOf(sharedModels.NotificationCollection).isRequired
+    },
+
+    componentDidMount: function() {
+      // XXX check:
+      // * UI-showcase for warnings
+      // * unmount version so thing
+      // * rootObject for tests
+      // * see if it's possible to compute the pixel measurements
+      var body = document.body;
+      // doesn't work with setAttribute version, curiously enough.  This one
+      // is more readable JS anyway.
+      body.style.width = "332px"; // XXX compute somehow eg 332 + "px"
+      body.style.height = "574px";
+    },
+
+    componentWillUnmount: function() {
+      var body = document.body;
+      body.style.width = "";
+      body.style.height = "";
+    },
+
+
+    render: function() {
+      var NotificationListView = sharedViews.NotificationListView;
+
+      return (
+        <div className="fte-get-started-container"
+             onContextMenu={this.handleContextMenu}>
+          <NotificationListView
+            clearOnDocumentHidden={true}
+            notifications={this.props.notifications} />
+          <GettingStartedView />
+          <ToSView />
         </div>
       );
     }
@@ -1226,6 +1260,7 @@ loop.panel = (function(_, mozL10n) {
     AccountLink: AccountLink,
     ConversationDropdown: ConversationDropdown,
     E10sNotSupported: E10sNotSupported,
+    FTEView: FTEView,
     GettingStartedView: GettingStartedView,
     init: init,
     NewRoomView: NewRoomView,
