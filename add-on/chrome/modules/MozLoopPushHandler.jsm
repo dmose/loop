@@ -668,6 +668,8 @@ var MozLoopPushHandler = {
    * @param {aMsg} notification message body
    */
   _onNotification: function(aMsg) {
+  consoleLog.log("aMsg:");
+  consoleLog.log(aMsg);
     if (this.serviceState !== SERVICE_STATE_ACTIVE ||
        this.registeredChannels.length === 0) {
       // Treat reception of a notification before handshake and registration

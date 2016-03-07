@@ -234,6 +234,8 @@ loop.store.TextChatStore = (function() {
      * @param  {sharedActions.remotePeerDisconnected} actionData
      */
     remotePeerDisconnected: function(actionData) {
+
+      console.log("remotePeerDisconnected OVER HERE actionData", actionData);
       var notificationTextKey;
 
       if (actionData.peerHungup) {

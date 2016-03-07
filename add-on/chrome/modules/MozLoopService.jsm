@@ -1084,7 +1084,7 @@ var MozLoopServiceInternal = {
               mm.removeMessageListener(name, listeners[name]);
             }
             listeners = {};
-
+            log.debug("CLOSED CHAT WINDOW");
             windowCloseCallback();
 
             if (conversationWindowData.type == "room") {
@@ -1386,26 +1386,49 @@ this.MozLoopService = {
     LoopRooms.on("update", onRoomsChange);
     LoopRooms.on("delete", onRoomsChange);
     LoopRooms.on("joined", (e, room, participant) => {
+      log.debug("JOINED CALLED");
+      log.debug("participant", participant);
+      // The participant that joined isn't necessarily included in room.participants (depending on
+      // when the broadcast happens) so concatenate.
+      let isOwnerInRoom = room.participants.concat(participant).some(p => p.owner);
+      let window = gWM.getMostRecentWindow("navigator:browser");
+      if (participant.owner) {
+        // is joining call and determine if other is here
+        let participantRoomCount = room.participants.concat(participant).length;
+        log.debug("isOwnerInRoom", isOwnerInRoom);
+        log.debug("room.participants", room.participants);
+        log.debug("room.participants.concat(participant).length", room.participants.concat(participant).length);
+        log.debug("room.participants.concat(participant)", room.participants.concat(participant));
+        log.debug("call _maybeShowBrowserSharingInfoBar(true) FROM joined");
+        window.LoopUI._maybeShowBrowserSharingInfoBar(participantRoomCount > 1);
+        log.debug("_maybeShowBrowserSharingInfoBar called");
+      } else {
+        if (isOwnerInRoom) {
+          window.LoopUI._maybeShowBrowserSharingInfoBar(true);
+        }
+      }
       // Don't alert if we're in the doNotDisturb mode, or the participant
       // is the owner - the content code deals with the rest of the sounds.
-      if (MozLoopServiceInternal.doNotDisturb || participant.owner) {
+      if (MozLoopServiceInternal.doNotDisturb || participant.owner) {   //
+          // log.debug("MozLoopServiceInternal.doNotDisturb", MozLoopServiceInternal.doNotDisturb);
+          log.debug("participant.owner", participant.owner);
+          log.debug("Returning Early");
         return;
       }
 
-      let window = gWM.getMostRecentWindow("navigator:browser");
       if (window) {
-        // The participant that joined isn't necessarily included in room.participants (depending on
-        // when the broadcast happens) so concatenate.
-        let isOwnerInRoom = room.participants.concat(participant).some(p => p.owner);
+        log.debug("Entered window clause");
         let bundle = MozLoopServiceInternal.localizedStrings;
 
         let localizedString;
         if (isOwnerInRoom) {
           localizedString = bundle.get("rooms_room_joined_owner_connected_label2");
+          log.debug("isOwnerInRoom true localizedString", localizedString);
         } else {
           let l10nString = bundle.get("rooms_room_joined_owner_not_connected_label");
           let roomUrlHostname = new URL(room.decryptedContext.urls[0].location).hostname.replace(/^www\./, "");
           localizedString = l10nString.replace("{{roomURLHostname}}", roomUrlHostname);
+          log.debug("localizedString", localizedString);
         }
         window.LoopUI.showNotification({
           sound: "room-joined",
@@ -1414,10 +1437,34 @@ this.MozLoopService = {
           message: localizedString,
           selectTab: "rooms"
         });
+
       }
     });
 
     LoopRooms.on("joined", this.maybeResumeTourOnRoomJoined.bind(this));
+
+    LoopRooms.on("left", (e, room, participant) => {
+      log.debug("LEFT CALL");
+
+      log.debug("room.participants", room.participants);
+      log.debug("room.participants.length", room.participants.length);
+      // Don't alert if we're in the doNotDisturb mode, or the participant
+      // is the owner - the content code deals with the rest of the sounds.
+      if (MozLoopServiceInternal.doNotDisturb || participant.owner) {   //
+        // log.debug("MozLoopServiceInternal.doNotDisturb", MozLoopServiceInternal.doNotDisturb);
+        log.debug("participant.owner", participant.owner);
+        log.debug("Returning Early");
+        return;
+      }
+
+      let window = gWM.getMostRecentWindow("navigator:browser");
+      if (window) {
+        // if it is not the owner leaving
+        log.debug("call _maybeShowBrowserSharingInfoBar(false) FROM left");
+        window.LoopUI._maybeShowBrowserSharingInfoBar(false);
+      }
+    });
+
 
     // If there's no guest room created and the user hasn't
     // previously authenticated then skip registration.
@@ -1439,6 +1486,7 @@ this.MozLoopService = {
   maybeResumeTourOnRoomJoined: function(e, room, participant) {
     let isOwnerInRoom = false;
     let isOtherInRoom = false;
+          log.debug("maybeResumeTourOnRoomJoined");
 
     if (!this.getLoopPref("gettingStarted.resumeOnFirstJoin")) {
       return;
@@ -1456,6 +1504,17 @@ this.MozLoopService = {
       } else {
         isOtherInRoom = true;
       }
+    }
+          log.debug("isOwnerInRoom", isOwnerInRoom);
+          log.debug("isOtherInRoom", isOtherInRoom);
+
+        // xxx comments
+      log.debug("room.participants", room.participants);
+    if (isOwnerInRoom) {
+      // log.debug("isOwnerInRoom", isOwnerInRoom);
+      // log.debug("call _maybeShowBrowserSharingInfoBar(isOtherInRoom)");
+      // window.LoopUI._maybeShowBrowserSharingInfoBar(isOtherInRoom);
+      // log.debug("_maybeShowBrowserSharingInfoBar called");
     }
 
     if (!isOwnerInRoom || !isOtherInRoom) {

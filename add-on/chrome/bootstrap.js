@@ -566,7 +566,9 @@ var WindowListener = {
        *                                                  Opens the panel by default.
        */
       showNotification: function(options) {
+        console.log("showNotification");
         if (this.MozLoopService.doNotDisturb) {
+          console.log("donotdisturb return early");
           return;
         }
 
@@ -574,6 +576,7 @@ var WindowListener = {
           throw new Error("Missing title, can not display notification");
         }
 
+        console.log("options", options);
         let notificationOptions = {
           body: options.message || ""
         };
@@ -587,8 +590,8 @@ var WindowListener = {
           };
           this.playSound(options.sound);
         }
-
         let notification = new window.Notification(options.title, notificationOptions);
+        console.log("notification", notification);
         notification.addEventListener("click", () => {
           if (window.closed) {
             return;
@@ -657,9 +660,7 @@ var WindowListener = {
           gBrowser.addEventListener("mousemove", this);
           gBrowser.addEventListener("click", this);
         }
-
-        this._maybeShowBrowserSharingInfoBar();
-
+        console.log("startBROWSERSHARING CALLED");
         // Get the first window Id for the listener.
         let browser = gBrowser.selectedBrowser;
         return new Promise(resolve => {
@@ -828,28 +829,65 @@ var WindowListener = {
         return str;
       },
 
+      _browserSharePaused: false,
+      /**
+       * Set correct strings for infobar notification based on if paused or empty.
+       */
+
+      _setInfoBarStrings: function(nonOwnerParticipants) {
+
+        let restartButtonLabel = this._getString("infobar_button_restart_label2");
+        let restartButtonAccessKey = this._getString("infobar_button_restart_accesskey");
+
+        let stopButtonLabel = this._getString("infobar_button_stop_label2");
+        let stopButtonAccessKey = this._getString("infobar_button_stop_accesskey");
+
+        let stopSharingMessage = this._getString("infobar_screenshare_stop_sharing_message2");
+        let stopSharingNoGuestMessage = this._getString("infobar_screenshare_stop_no_guest_message");
+
+        let sharingMessage = this._getString("infobar_screenshare_browser_message3");
+        let sharingNoGuestMessage = this._getString("infobar_screenshare_no_guest_message");
+
+        let infoStrings = {};
+        let sharePaused = this._browserSharePaused;
+        if (nonOwnerParticipants) {
+          // more than one participant
+          infoStrings.message = sharePaused ? stopSharingMessage : sharingMessage;
+        } else {
+          // empty room
+          infoStrings.message = sharePaused ? stopSharingNoGuestMessage : sharingNoGuestMessage;
+        }
+        infoStrings.label = sharePaused ? restartButtonLabel : stopButtonLabel;
+        infoStrings.accesskey = sharePaused ? restartButtonAccessKey : stopButtonAccessKey;
+
+        return infoStrings;
+      },
       /**
        * Shows an infobar notification at the top of the browser window that warns
        * the user that their browser tabs are being broadcasted through the current
        * conversation.
        */
-      _maybeShowBrowserSharingInfoBar: function() {
-        // Pre-load strings
-        let pausedStrings = {
-          label: this._getString("infobar_button_restart_label2"),
-          accesskey: this._getString("infobar_button_restart_accesskey"),
-          message: this._getString("infobar_screenshare_stop_sharing_message")
-        };
-        let unpausedStrings = {
-          label: this._getString("infobar_button_stop_label2"),
-          accesskey: this._getString("infobar_button_stop_accesskey"),
-          message: this._getString("infobar_screenshare_browser_message2")
-        };
-        let initStrings =
-          this._browserSharePaused ? pausedStrings : unpausedStrings;
-
+      _maybeShowBrowserSharingInfoBar: function(nonOwnerParticipants) {
+        console.log("_maybeShowBrowserSharingInfoBar");
         this._hideBrowserSharingInfoBar();
         let box = gBrowser.getNotificationBox();
+
+        console.log("nonOwnerParticipants", nonOwnerParticipants);
+        if (nonOwnerParticipants === undefined) {
+          console.log("nonOwnerParticipants is undefined");
+          nonOwnerParticipants = this.switchTabNonOwnerParticipants;
+        } else {
+          this.switchTabNonOwnerParticipants = nonOwnerParticipants;
+        }
+        console.log("this.switchTabNonOwnerParticipants", this.switchTabNonOwnerParticipants);
+        console.log("nonOwnerParticipants", nonOwnerParticipants);
+
+
+        let initStrings = this._setInfoBarStrings(nonOwnerParticipants);
+
+        console.log("this._browserSharePaused", this._browserSharePaused);
+        console.log("initStrings", initStrings);
+
         let bar = box.appendNotification(
           initStrings.message,            // label
           kBrowserSharingNotificationId,  // value
@@ -858,11 +896,13 @@ var WindowListener = {
           box.PRIORITY_WARNING_LOW,       // priority
           [{                              // buttons (Pause, Stop)
             label: initStrings.label,
-            accessKey: initStrings.accessKey,
+            accessKey: initStrings.accesskey,
             isDefault: false,
             callback: (event, buttonInfo, buttonNode) => {
               this._browserSharePaused = !this._browserSharePaused;
-              let stringObj = this._browserSharePaused ? pausedStrings : unpausedStrings;
+              console.log("callback nonOwnerParticipants", nonOwnerParticipants);
+              let stringObj = this._setInfoBarStrings(nonOwnerParticipants);
+              console.log("stringObj", stringObj);
               bar.label = stringObj.message;
               bar.classList.toggle("paused", this._browserSharePaused);
               buttonNode.label = stringObj.label;
