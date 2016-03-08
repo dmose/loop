@@ -210,7 +210,7 @@ var WindowListener = {
             this.LoopAPI.initialize();
 
             let anchor = event ? event.target : this.toolbarButton.anchor;
-            this.PanelFrame.showPopup(
+            this.ForkedPanelFrame.showPopup(
               window,
               anchor,
               "loop", // Notification Panel Type
@@ -916,7 +916,7 @@ var WindowListener = {
     XPCOMUtils.defineLazyModuleGetter(LoopUI, "LoopAPI", "chrome://loop/content/modules/MozLoopAPI.jsm");
     XPCOMUtils.defineLazyModuleGetter(LoopUI, "LoopRooms", "chrome://loop/content/modules/LoopRooms.jsm");
     XPCOMUtils.defineLazyModuleGetter(LoopUI, "MozLoopService", "chrome://loop/content/modules/MozLoopService.jsm");
-    XPCOMUtils.defineLazyModuleGetter(LoopUI, "PanelFrame", "resource:///modules/PanelFrame.jsm");
+    XPCOMUtils.defineLazyModuleGetter(LoopUI, "ForkedPanelFrame", "chrome://loop/content/modules/ForkedPanelFrame.jsm");
     XPCOMUtils.defineLazyModuleGetter(LoopUI, "PlacesUtils", "resource://gre/modules/PlacesUtils.jsm");
 
     LoopUI.init();
