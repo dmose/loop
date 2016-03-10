@@ -836,7 +836,6 @@ loop.store.ActiveRoomStore = (function(mozL10n) {
         });
         return;
       }
-      console.log("mediaStreamDestroyed actionData", actionData);
       this.setStoreState({
         remoteSrcMediaElement: null
       });
@@ -903,7 +902,6 @@ loop.store.ActiveRoomStore = (function(mozL10n) {
      * @param {Number} windowId  The new windowId to start sharing.
      */
     _handleSwitchBrowserShare: function(windowId) {
-      console.log("_handleSwitchBrowserShare windowId", windowId);
       if (Array.isArray(windowId)) {
         windowId = windowId[0];
       }
@@ -1022,7 +1020,6 @@ loop.store.ActiveRoomStore = (function(mozL10n) {
      * @param {sharedActions.ToggleBrowserSharing} actionData
      */
     toggleBrowserSharing: function(actionData) {
-      console.log("toggleBrowserSharing actionData", actionData);
       this.setStoreState({
         sharingPaused: !actionData.enabled
       });

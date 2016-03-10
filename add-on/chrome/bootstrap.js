@@ -566,9 +566,7 @@ var WindowListener = {
        *                                                  Opens the panel by default.
        */
       showNotification: function(options) {
-        console.log("showNotification");
         if (this.MozLoopService.doNotDisturb) {
-          console.log("donotdisturb return early");
           return;
         }
 
@@ -576,7 +574,6 @@ var WindowListener = {
           throw new Error("Missing title, can not display notification");
         }
 
-        console.log("options", options);
         let notificationOptions = {
           body: options.message || ""
         };
@@ -591,7 +588,6 @@ var WindowListener = {
           this.playSound(options.sound);
         }
         let notification = new window.Notification(options.title, notificationOptions);
-        console.log("notification", notification);
         notification.addEventListener("click", () => {
           if (window.closed) {
             return;
@@ -660,7 +656,6 @@ var WindowListener = {
           gBrowser.addEventListener("mousemove", this);
           gBrowser.addEventListener("click", this);
         }
-        console.log("startBROWSERSHARING CALLED");
         // Get the first window Id for the listener.
         let browser = gBrowser.selectedBrowser;
         return new Promise(resolve => {
@@ -850,6 +845,7 @@ var WindowListener = {
 
         let infoStrings = {};
         let sharePaused = this._browserSharePaused;
+
         if (nonOwnerParticipants) {
           // more than one participant
           infoStrings.message = sharePaused ? stopSharingMessage : sharingMessage;
@@ -859,7 +855,7 @@ var WindowListener = {
         }
         infoStrings.label = sharePaused ? restartButtonLabel : stopButtonLabel;
         infoStrings.accesskey = sharePaused ? restartButtonAccessKey : stopButtonAccessKey;
-
+      
         return infoStrings;
       },
       /**
@@ -868,25 +864,16 @@ var WindowListener = {
        * conversation.
        */
       _maybeShowBrowserSharingInfoBar: function(nonOwnerParticipants) {
-        console.log("_maybeShowBrowserSharingInfoBar");
         this._hideBrowserSharingInfoBar();
         let box = gBrowser.getNotificationBox();
 
-        console.log("nonOwnerParticipants", nonOwnerParticipants);
         if (nonOwnerParticipants === undefined) {
-          console.log("nonOwnerParticipants is undefined");
           nonOwnerParticipants = this.switchTabNonOwnerParticipants;
         } else {
           this.switchTabNonOwnerParticipants = nonOwnerParticipants;
         }
-        console.log("this.switchTabNonOwnerParticipants", this.switchTabNonOwnerParticipants);
-        console.log("nonOwnerParticipants", nonOwnerParticipants);
-
 
         let initStrings = this._setInfoBarStrings(nonOwnerParticipants);
-
-        console.log("this._browserSharePaused", this._browserSharePaused);
-        console.log("initStrings", initStrings);
 
         let bar = box.appendNotification(
           initStrings.message,            // label
@@ -900,9 +887,7 @@ var WindowListener = {
             isDefault: false,
             callback: (event, buttonInfo, buttonNode) => {
               this._browserSharePaused = !this._browserSharePaused;
-              console.log("callback nonOwnerParticipants", nonOwnerParticipants);
               let stringObj = this._setInfoBarStrings(nonOwnerParticipants);
-              console.log("stringObj", stringObj);
               bar.label = stringObj.message;
               bar.classList.toggle("paused", this._browserSharePaused);
               buttonNode.label = stringObj.label;
