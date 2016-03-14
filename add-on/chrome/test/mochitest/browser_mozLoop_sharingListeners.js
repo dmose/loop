@@ -163,7 +163,7 @@ add_task(function* test_infoBar() {
 
   let testBarProps = function() {
     let bar = getInfoBar();
-
+    console.log("bar", bar);
     // Start with some basic assertions for the bar.
     Assert.ok(bar, "The notification bar should be visible");
     Assert.strictEqual(bar.hidden, false, "Again, the notification bar should be visible");
