@@ -515,6 +515,7 @@ var WindowListener = {
           state = "disabled";
           mozL10nId += "-donotdisturb";
         } else if (this.MozLoopService.roomsParticipantsCount > 0) {
+          console.log("this.MozLoopService.roomsParticipantsCount", this.MozLoopService.roomsParticipantsCount);
           state = "active";
           this.roomsWithNonOwners().then(roomsWithNonOwners => {
             if (roomsWithNonOwners.length > 0) {
@@ -587,6 +588,7 @@ var WindowListener = {
           };
           this.playSound(options.sound);
         }
+
         let notification = new window.Notification(options.title, notificationOptions);
         notification.addEventListener("click", () => {
           if (window.closed) {
@@ -824,44 +826,48 @@ var WindowListener = {
         return str;
       },
 
-      _browserSharePaused: false,
       /**
        * Set correct strings for infobar notification based on if paused or empty.
        */
 
-      _setInfoBarStrings: function(nonOwnerParticipants) {
-
-        let restartButtonLabel = this._getString("infobar_button_restart_label2");
-        let restartButtonAccessKey = this._getString("infobar_button_restart_accesskey");
-
-        let stopButtonLabel = this._getString("infobar_button_stop_label2");
-        let stopButtonAccessKey = this._getString("infobar_button_stop_accesskey");
-
-        let stopSharingMessage = this._getString("infobar_screenshare_stop_sharing_message2");
-        let stopSharingNoGuestMessage = this._getString("infobar_screenshare_stop_no_guest_message");
-
-        let sharingMessage = this._getString("infobar_screenshare_browser_message3");
-        let sharingNoGuestMessage = this._getString("infobar_screenshare_no_guest_message");
-
+      _setInfoBarStrings: function(nonOwnerParticipants, sharePaused) {
         let infoStrings = {};
-        let sharePaused = this._browserSharePaused;
-
         if (nonOwnerParticipants) {
+          let stopSharingMessage = this._getString("infobar_screenshare_stop_sharing_message2");
+          let sharingMessage = this._getString("infobar_screenshare_browser_message3");
           // more than one participant
           infoStrings.message = sharePaused ? stopSharingMessage : sharingMessage;
         } else {
           // empty room
+          let stopSharingNoGuestMessage = this._getString("infobar_screenshare_stop_no_guest_message");
+          let sharingNoGuestMessage = this._getString("infobar_screenshare_no_guest_message");
           infoStrings.message = sharePaused ? stopSharingNoGuestMessage : sharingNoGuestMessage;
         }
-        infoStrings.label = sharePaused ? restartButtonLabel : stopButtonLabel;
-        infoStrings.accesskey = sharePaused ? restartButtonAccessKey : stopButtonAccessKey;
-      
+        if (sharePaused) {
+          infoStrings.label = this._getString("infobar_button_restart_label2");
+          infoStrings.accesskey = this._getString("infobar_button_restart_accesskey");
+        } else {
+          infoStrings.label = this._getString("infobar_button_stop_label2");
+          infoStrings.accesskey = this._getString("infobar_button_stop_accesskey");
+        }
         return infoStrings;
       },
+
+      /**
+       * Indicates if tab sharing is paused.
+       * Set by tab pause button, startBrowserSharing and stopBrowserSharing.
+       * When link generator(owner) enters room we are sharing tabs by default.
+       * Set to default here as startBrowserSharing is called too late for
+       * infobar notification state.
+       */
+      _browserSharePaused: false,
+
       /**
        * Shows an infobar notification at the top of the browser window that warns
        * the user that their browser tabs are being broadcasted through the current
        * conversation.
+       * @param  {Boolean} optional nonOwnerParticipants is true if a guest is present in the room
+       * @return {void}
        */
       _maybeShowBrowserSharingInfoBar: function(nonOwnerParticipants) {
         this._hideBrowserSharingInfoBar();
@@ -872,8 +878,10 @@ var WindowListener = {
         } else {
           this.switchTabNonOwnerParticipants = nonOwnerParticipants;
         }
+        console.log("this.switchTabNonOwnerParticipants", this.switchTabNonOwnerParticipants);
+        console.log("nonOwnerParticipants", nonOwnerParticipants);
 
-        let initStrings = this._setInfoBarStrings(nonOwnerParticipants);
+        let initStrings = this._setInfoBarStrings(nonOwnerParticipants, this._browserSharePaused);
 
         let bar = box.appendNotification(
           initStrings.message,            // label
@@ -887,7 +895,9 @@ var WindowListener = {
             isDefault: false,
             callback: (event, buttonInfo, buttonNode) => {
               this._browserSharePaused = !this._browserSharePaused;
-              let stringObj = this._setInfoBarStrings(nonOwnerParticipants);
+              console.log("callback nonOwnerParticipants", nonOwnerParticipants);
+              let stringObj = this._setInfoBarStrings(nonOwnerParticipants, this._browserSharePaused);
+              console.log("stringObj", stringObj);
               bar.label = stringObj.message;
               bar.classList.toggle("paused", this._browserSharePaused);
               buttonNode.label = stringObj.label;

@@ -1388,17 +1388,16 @@ this.MozLoopService = {
     LoopRooms.on("joined", (e, room, participant) => {
       // The participant that joined isn't necessarily included in room.participants (depending on
       // when the broadcast happens) so concatenate.
-      let isOwnerInRoom = room.participants.concat(participant).some(p => p.owner);
+      let participantConcat = room.participants.concat(participant);
+      let participantRoomCount = participantConcat.length;
+      log.debug("participantRoomCount", participantRoomCount);
+      log.debug("room.participants.concat(participant).length", room.participants.concat(participant).length);
+      log.debug("room.participants.concat(participant)", room.participants.concat(participant));
+      log.debug("participantRoomCount > 1", participantRoomCount > 1);
+      log.debug("room.participants", room.participants);
       let window = gWM.getMostRecentWindow("navigator:browser");
-      if (participant.owner) {
-        // is joining call and determine if other is here
-        let participantRoomCount = room.participants.concat(participant).length;
-        window.LoopUI._maybeShowBrowserSharingInfoBar(participantRoomCount > 1);
-      } else {
-        if (isOwnerInRoom) {
-          window.LoopUI._maybeShowBrowserSharingInfoBar(true);
-        }
-      }
+
+      window.LoopUI._maybeShowBrowserSharingInfoBar(participantRoomCount > 1);
       // Don't alert if we're in the doNotDisturb mode, or the participant
       // is the owner - the content code deals with the rest of the sounds.
       if (MozLoopServiceInternal.doNotDisturb || participant.owner) {   //
@@ -1409,6 +1408,8 @@ this.MozLoopService = {
         let bundle = MozLoopServiceInternal.localizedStrings;
 
         let localizedString;
+        let isOwnerInRoom = participantConcat.some(p => p.owner);
+        log.debug("isOwnerInRoom", isOwnerInRoom);
         if (isOwnerInRoom) {
           localizedString = bundle.get("rooms_room_joined_owner_connected_label2");
         } else {
