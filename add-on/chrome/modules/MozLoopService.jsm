@@ -1398,6 +1398,9 @@ this.MozLoopService = {
       let window = gWM.getMostRecentWindow("navigator:browser");
 
       window.LoopUI._maybeShowBrowserSharingInfoBar(participantRoomCount > 1);
+
+      log.debug("room.roomToken", room.roomToken);
+      log.debug("LoopRooms.getNumParticipants(room.roomToken)", LoopRooms.getNumParticipants(room.roomToken));
       // Don't alert if we're in the doNotDisturb mode, or the participant
       // is the owner - the content code deals with the rest of the sounds.
       if (MozLoopServiceInternal.doNotDisturb || participant.owner) {   //

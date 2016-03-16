@@ -556,6 +556,7 @@ var LoopRoomsInternal = {
       for (let room of roomsList) {
         // See if we already have this room in our cache.
         let orig = this.rooms.get(room.roomToken);
+        // let orig = extend({}, this.rooms.get(room.roomToken));
 
         if (room.deleted) {
           // If this client deleted the room, then we'll already have
@@ -567,11 +568,11 @@ var LoopRoomsInternal = {
           eventEmitter.emit("delete", room);
           eventEmitter.emit("delete:" + room.roomToken, room);
         } else {
+          yield this.addOrUpdateRoom(room, !!orig);
+
           if (orig) {
             checkForParticipantsUpdate(orig, room);
           }
-
-          yield this.addOrUpdateRoom(room, !!orig);
         }
       }
 
@@ -592,6 +593,23 @@ var LoopRoomsInternal = {
     });
 
     return gGetAllPromise;
+  },
+
+  getNumParticipants: function(roomToken) {
+    MozLoopService.log.debug("roomToken", roomToken);
+    // XXX Add in checking for room existing & participants existing.
+    // XXX Is participants an object or array?
+    let room = this.rooms.get(roomToken);
+    MozLoopService.log.debug("room", room);
+    if (room) {
+      MozLoopService.log.debug("room.participants", room.participants);
+      MozLoopService.log.debug("room.participants.length", room.participants.length);
+      return room.participants.length;
+    } else {
+      // no room, send back 0 to indicate none in room
+      // and/or error output
+      return 0;
+    }
   },
 
   /**
@@ -1171,6 +1189,10 @@ this.LoopRooms = {
 
   maybeRefresh: function(user) {
     return LoopRoomsInternal.maybeRefresh(user);
+  },
+
+  getNumParticipants: function(roomToken) {
+    return LoopRoomsInternal.getNumParticipants(roomToken);
   },
 
   /**

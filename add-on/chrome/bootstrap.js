@@ -658,6 +658,9 @@ var WindowListener = {
           gBrowser.addEventListener("mousemove", this);
           gBrowser.addEventListener("click", this);
         }
+
+        // console.log("this.LoopRooms.getNumParticipants()", this.LoopRooms.getNumParticipants();
+
         // Get the first window Id for the listener.
         let browser = gBrowser.selectedBrowser;
         return new Promise(resolve => {
