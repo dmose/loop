@@ -167,6 +167,8 @@ const kMessageHandlers = {
    *                           the senders' channel.
    */
   AddBrowserSharingListener: function(message, reply) {
+    MozLoopService.log.debug("AddBrowserSharingListener message", message);
+
     let win = Services.wm.getMostRecentWindow("navigator:browser");
     let browser = win && win.gBrowser.selectedBrowser;
     if (!win || !browser) {
@@ -188,8 +190,9 @@ const kMessageHandlers = {
     }
 
     let [windowId] = message.data;
+    MozLoopService.log.debug("AddBrowserSharingListener windowId", windowId);
 
-    win.LoopUI.startBrowserSharing();
+    win.LoopUI.startBrowserSharing(windowId);
 
     // Point new tab to load about:home to avoid accidentally sharing top sites.
     NewTabURL.override("about:home");

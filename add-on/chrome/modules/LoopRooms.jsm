@@ -605,11 +605,10 @@ var LoopRoomsInternal = {
       MozLoopService.log.debug("room.participants", room.participants);
       MozLoopService.log.debug("room.participants.length", room.participants.length);
       return room.participants.length;
-    } else {
-      // no room, send back 0 to indicate none in room
-      // and/or error output
-      return 0;
     }
+    // no room, send back 0 to indicate none in room
+    // and/or error output
+    return 0;
   },
 
   /**

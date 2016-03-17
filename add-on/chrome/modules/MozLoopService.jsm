@@ -1386,32 +1386,26 @@ this.MozLoopService = {
     LoopRooms.on("update", onRoomsChange);
     LoopRooms.on("delete", onRoomsChange);
     LoopRooms.on("joined", (e, room, participant) => {
-      // The participant that joined isn't necessarily included in room.participants (depending on
-      // when the broadcast happens) so concatenate.
-      let participantConcat = room.participants.concat(participant);
-      let participantRoomCount = participantConcat.length;
-      log.debug("participantRoomCount", participantRoomCount);
-      log.debug("room.participants.concat(participant).length", room.participants.concat(participant).length);
-      log.debug("room.participants.concat(participant)", room.participants.concat(participant));
-      log.debug("participantRoomCount > 1", participantRoomCount > 1);
-      log.debug("room.participants", room.participants);
-      let window = gWM.getMostRecentWindow("navigator:browser");
-
-      window.LoopUI._maybeShowBrowserSharingInfoBar(participantRoomCount > 1);
-
-      log.debug("room.roomToken", room.roomToken);
-      log.debug("LoopRooms.getNumParticipants(room.roomToken)", LoopRooms.getNumParticipants(room.roomToken));
       // Don't alert if we're in the doNotDisturb mode, or the participant
       // is the owner - the content code deals with the rest of the sounds.
-      if (MozLoopServiceInternal.doNotDisturb || participant.owner) {   //
+      if (MozLoopServiceInternal.doNotDisturb || participant.owner) {
         return;
       }
+
+      let window = gWM.getMostRecentWindow("navigator:browser");
+      log.debug("JOINED window.LoopUI.getCurrentRoomToken()", window.LoopUI.getCurrentRoomToken());
+      log.debug("room.roomToken", room.roomToken);
+      if (window.LoopUI.getCurrentRoomToken() && window.LoopUI.getCurrentRoomToken() === room.roomToken) {
+        log.debug("CALL INFOBAR");
+        window.LoopUI._maybeShowBrowserSharingInfoBar(window.LoopUI.getCurrentRoomToken());
+      }
+      log.debug("LoopRooms.getNumParticipants(room.roomToken)", LoopRooms.getNumParticipants(room.roomToken));
 
       if (window) {
         let bundle = MozLoopServiceInternal.localizedStrings;
 
         let localizedString;
-        let isOwnerInRoom = participantConcat.some(p => p.owner);
+        let isOwnerInRoom = room.participants.some(p => p.owner);
         log.debug("isOwnerInRoom", isOwnerInRoom);
         if (isOwnerInRoom) {
           localizedString = bundle.get("rooms_room_joined_owner_connected_label2");
@@ -1436,15 +1430,22 @@ this.MozLoopService = {
     LoopRooms.on("left", (e, room, participant) => {
       // Don't alert if we're in the doNotDisturb mode, or the participant
       // is the owner - the content code deals with the rest of the sounds.
-      if (MozLoopServiceInternal.doNotDisturb || participant.owner) {   //
-        return;
-      }
 
       let window = gWM.getMostRecentWindow("navigator:browser");
-      if (window) {
-        // if it is not the owner leaving
-        window.LoopUI._maybeShowBrowserSharingInfoBar(false);
+      log.debug("LEFT window.LoopUI.getCurrentRoomToken()", window.LoopUI.getCurrentRoomToken());
+      log.debug("!participant.owner", !participant.owner);
+      if (!participant.owner && window.LoopUI.getCurrentRoomToken() && window.LoopUI.getCurrentRoomToken() === room.roomToken) {
+        window.LoopUI._maybeShowBrowserSharingInfoBar(window.LoopUI.getCurrentRoomToken());
       }
+
+      // if (MozLoopServiceInternal.doNotDisturb || participant.owner) {   //
+        // return;
+      // }
+
+      // if (window) {
+        // if it is not the owner leaving
+        // window.LoopUI._maybeShowBrowserSharingInfoBar(false);
+      // }
     });
 
 
