@@ -515,7 +515,6 @@ var WindowListener = {
           state = "disabled";
           mozL10nId += "-donotdisturb";
         } else if (this.MozLoopService.roomsParticipantsCount > 0) {
-          console.log("this.MozLoopService.roomsParticipantsCount", this.MozLoopService.roomsParticipantsCount);
           state = "active";
           this.roomsWithNonOwners().then(roomsWithNonOwners => {
             if (roomsWithNonOwners.length > 0) {
@@ -654,7 +653,6 @@ var WindowListener = {
        * - {Integer} windowId  The new windowId for the browser.
        */
       startBrowserSharing: function(roomToken) {
-        log.debug("STARTBROWSERSHARING");
         if (!this._listeningToTabSelect) {
           gBrowser.tabContainer.addEventListener("TabSelect", this);
           this._listeningToTabSelect = true;
@@ -674,8 +672,6 @@ var WindowListener = {
           gBrowser.addEventListener("click", this);
         }
 
-        // console.log("this.LoopRooms.getNumParticipants()", this.LoopRooms.getNumParticipants());
-        console.log("startBrowserSharing roomToken", roomToken);
         this.setCurrentRoomToken(roomToken);
         this._maybeShowBrowserSharingInfoBar(roomToken);
 
@@ -892,12 +888,9 @@ var WindowListener = {
        * @return {void}
        */
       _maybeShowBrowserSharingInfoBar: function(currentRoomToken) {
-        console.log("_maybeShowBrowserSharingInfoBar this.getCurrentRoomToken()", this.getCurrentRoomToken());
-
         this._hideBrowserSharingInfoBar();
 
         let participantsCount = this.LoopRooms.getNumParticipants(currentRoomToken);
-        console.log("participantsCount", participantsCount);
 
         let initStrings = this._setInfoBarStrings(participantsCount > 1, this._browserSharePaused);
 
@@ -914,9 +907,7 @@ var WindowListener = {
             isDefault: false,
             callback: (event, buttonInfo, buttonNode) => {
               this._browserSharePaused = !this._browserSharePaused;
-              console.log("callback this.LoopRooms.getNumParticipants(this.getCurrentRoomToken())", this.LoopRooms.getNumParticipants(this.getCurrentRoomToken()));
               let stringObj = this._setInfoBarStrings(this.LoopRooms.getNumParticipants(this.getCurrentRoomToken()) > 1, this._browserSharePaused);
-              console.log("stringObj", stringObj);
               bar.label = stringObj.message;
               bar.classList.toggle("paused", this._browserSharePaused);
               buttonNode.label = stringObj.label;

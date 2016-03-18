@@ -596,14 +596,8 @@ var LoopRoomsInternal = {
   },
 
   getNumParticipants: function(roomToken) {
-    MozLoopService.log.debug("roomToken", roomToken);
-    // XXX Add in checking for room existing & participants existing.
-    // XXX Is participants an object or array?
     let room = this.rooms.get(roomToken);
-    MozLoopService.log.debug("room", room);
     if (room) {
-      MozLoopService.log.debug("room.participants", room.participants);
-      MozLoopService.log.debug("room.participants.length", room.participants.length);
       return room.participants.length;
     }
     // no room, send back 0 to indicate none in room
