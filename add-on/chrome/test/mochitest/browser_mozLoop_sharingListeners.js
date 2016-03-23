@@ -163,13 +163,22 @@ add_task(function* test_infoBar() {
 
   let testBarProps = function() {
     let bar = getInfoBar();
-    console.log("bar", bar);
     // Start with some basic assertions for the bar.
     Assert.ok(bar, "The notification bar should be visible");
     Assert.strictEqual(bar.hidden, false, "Again, the notification bar should be visible");
 
+    // Message label
+    Assert.equal(bar.label, getLoopString("infobar_screenshare_no_guest_message"), "The bar label should match");
+
+    // Pause button and type
     let button = bar.querySelector(".notification-button");
     Assert.ok(button, "There should be a button present");
+    Assert.equal(button.type, "pause", "The bar button should be type pause");
+
+    // Paused state and label message
+    button.click();
+    Assert.equal(bar.label, getLoopString("infobar_screenshare_stop_no_guest_message"), "The bar label should match when paused");
+    button.click();
   };
 
   testBarProps();
