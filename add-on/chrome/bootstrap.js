@@ -332,6 +332,8 @@ var WindowListener = {
 
         Services.obs.addObserver(this, "loop-status-changed", false);
 
+        this.addSidebar();
+
         this.updateToolbarState();
       },
 
@@ -364,6 +366,27 @@ var WindowListener = {
         }
       },
 
+
+      /* XXX make this into it's own object */
+      addSidebar: function() {
+
+        let ownerDocument = gBrowser.ownerDocument;
+        // XXX note that we're only doing the first tab selected when the window opens
+        this._sidebar = gBrowser.getSidebarContainer(gBrowser.selectedTab.linkedBrowser);
+
+        this._splitter = ownerDocument.createElement("splitter");
+        this._splitter.setAttribute("class", "loop-side-splitter");
+
+        this.frame = ownerDocument.createElement("iframe");
+        this.frame.className = "loop-side-iframe";
+
+        this.frame.width = 200;
+
+        this._sidebar.appendChild(this._splitter);
+        this._sidebar.appendChild(this.frame);
+
+        this.frame.setAttribute("src", "https://www.mozilla.org/");
+      },
       // Implements nsIObserver
       observe: function(subject, topic, data) {
         if (topic != "loop-status-changed") {
