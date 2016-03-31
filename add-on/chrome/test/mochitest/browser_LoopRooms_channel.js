@@ -22,6 +22,7 @@ const LINKCLICKER_URL_PREFNAME = "loop.linkClicker.url";
 var openChatOrig = Chat.open;
 
 var fakeRoomList = new Map([[ROOM_TOKEN, { roomToken: ROOM_TOKEN }]]);
+var originalRoomList = new Map([[ROOM_TOKEN, { roomToken: ROOM_TOKEN }]]);
 
 function BackChannel(uri) {
   this.channel = new WebChannel("test-loop-link-clicker-backchannel", uri);
@@ -109,7 +110,7 @@ add_task(function* test_loopRooms_webChannel_permissions() {
 add_task(function* test_loopRooms_webchannel_checkWillOpenRoom() {
   // We've already tested if the room doesn't exist above, so here we add the
   // room and check the result.
-  LoopRooms._setRoomsCache(fakeRoomList);
+  LoopRooms._setRoomsCache(fakeRoomList, originalRoomList);
 
   let got = yield promiseNewChannelResponse(TEST_URI_GOOD, gGoodBackChannel, "checkWillOpenRoom");
 

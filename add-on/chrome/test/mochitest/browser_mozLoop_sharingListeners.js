@@ -146,6 +146,7 @@ add_task(function* test_multipleListener() {
 
 add_task(function* test_infoBar() {
   const kBrowserSharingNotificationId = "loop-sharing-notification";
+  const ROOM_TOKEN = "fake1234";
 
   // First we add two tabs.
   yield promiseWindowIdReceivedNewTab();
@@ -178,7 +179,36 @@ add_task(function* test_infoBar() {
     // Paused state and label message
     button.click();
     Assert.equal(bar.label, getLoopString("infobar_screenshare_stop_no_guest_message"), "The bar label should match when paused");
+    let withOutParticipants = new Map([[ROOM_TOKEN, {
+                                        roomToken: ROOM_TOKEN,
+                                        participants: [{
+                                          roomConnectionId: "3ff0a2e1-f73f-43c6-bb4f-154cc847xy1a",
+                                          displayName: "Guest",
+                                          account: "fake.user@null.com",
+                                          owner: true
+                                        }]
+                                      }
+                                    ]]);
+    let withParticipants = new Map([[ROOM_TOKEN, {
+                                    roomToken: ROOM_TOKEN,
+                                    participants: [{
+                                      roomConnectionId: "3ff0a2e1-f73f-43c6-bb4f-154cc847xy1a",
+                                      displayName: "Guest",
+                                      account: "fake.user@null.com",
+                                      owner: true
+                                    }, {
+                                      roomConnectionId: "3ff0a2e1-f73f-43c6-bb4f-123456789112",
+                                      displayName: "Guest",
+                                      owner: false
+                                    }]
+                                  }
+                                ]]);
+    LoopRooms._setRoomsCache(withParticipants, withOutParticipants);
+    Assert.equal(bar.label, getLoopString("infobar_screenshare_stop_sharing_message2"), "The bar label should match when paused and guest in room");
+
     button.click();
+    Assert.equal(bar.label, getLoopString("infobar_screenshare_browser_message2"), "The bar label should match when guest in room");
+
   };
 
   testBarProps();

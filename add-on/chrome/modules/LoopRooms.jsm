@@ -556,7 +556,6 @@ var LoopRoomsInternal = {
       for (let room of roomsList) {
         // See if we already have this room in our cache.
         let orig = this.rooms.get(room.roomToken);
-        // let orig = extend({}, this.rooms.get(room.roomToken));
 
         if (room.deleted) {
           // If this client deleted the room, then we'll already have
@@ -595,14 +594,19 @@ var LoopRoomsInternal = {
     return gGetAllPromise;
   },
 
+  /**
+   * Request information about number of participants joined to a specific room from the server.
+   * Used to determine infobar message state on the number of participants in the room.
+   *
+   * @param {String}  roomToken Room identifier
+   * @return {Number} Count of participants in the room.
+   */
   getNumParticipants: function(roomToken) {
-    let room = this.rooms.get(roomToken);
-    if (room) {
-      return room.participants.length;
+    if (this.rooms.has(roomToken)) {
+      return this.rooms.get(roomToken).participants.length;
     }
-    // no room, send back 0 to indicate none in room
-    // and/or error output
-    return 0;
+    // no room, log error and send back 0 to indicate none in room
+    throw new Error("No room found in current session.");
   },
 
   /**
@@ -641,10 +645,9 @@ var LoopRoomsInternal = {
         eventEmitter.emit("delete", room);
         eventEmitter.emit("delete:" + room.roomToken, room);
       } else {
-        checkForParticipantsUpdate(room, data);
-        extend(room, data);
+        yield this.addOrUpdateRoom(data, !needsUpdate);
 
-        yield this.addOrUpdateRoom(room, !needsUpdate);
+        checkForParticipantsUpdate(room, data);
       }
       callback(null, room);
     }.bind(this)).catch(callback);
@@ -1238,14 +1241,18 @@ this.LoopRooms = {
    * @param {Map} roomsCache The new cache data to set for testing purposes. If
    *                         not specified, it will reset the cache.
    */
-  _setRoomsCache: function(roomsCache) {
+  _setRoomsCache: function(roomsCache, orig) {
     LoopRoomsInternal.rooms.clear();
     gDirty = true;
 
     if (roomsCache) {
       // Need a clone as the internal map is read-only.
       for (let [key, value] of roomsCache) {
+
         LoopRoomsInternal.rooms.set(key, value);
+        if (orig) {
+          checkForParticipantsUpdate(value, orig);
+        }
       }
       gGetAllPromise = null;
       gDirty = false;

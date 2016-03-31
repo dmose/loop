@@ -290,6 +290,7 @@ var WindowListener = {
               if (!("participants" in room)) {
                 continue;
               }
+              console.log("bar room.participants", room.participants);
               let numNonOwners = room.participants.filter(participant => !participant.owner).length;
               if (!numNonOwners) {
                 continue;
@@ -634,14 +635,17 @@ var WindowListener = {
       /**
        * Set the current room token
        *
-       * Push message parameters:
-       * - {String} roomToken  The current room that the link generator is connected to.
+       * @param {(String|False)} roomToken  The current room that the link generator is connected to.
+       *                                   Set to false to clear roomToken at end of session cleanup.
        */
-      setCurrentRoomToken: function(roomToken) {
-        this._currentRoomToken = roomToken;
+      set currentRoomToken(roomToken) {
+        console.log("bar currentRoomToken Called roomToken", roomToken);
+        this._currentRoomToken = roomToken ? roomToken : null;
+        console.log("bar currentRoomToken this._currentRoomToken", this._currentRoomToken);
       },
 
-      getCurrentRoomToken: function() {
+      get currentRoomToken() {
+        console.log("bar currentRoomToken Return this._currentRoomToken", this._currentRoomToken);
         return this._currentRoomToken;
       },
 
@@ -649,8 +653,7 @@ var WindowListener = {
        * Start listening to selected tab changes and notify any content page that's
        * listening to 'BrowserSwitch' push messages.
        *
-       * Push message parameters:
-       * - {Integer} windowId  The new windowId for the browser.
+       * @param {(String)} roomToken  The current room that the link generator is connecting to.
        */
       startBrowserSharing: function(roomToken) {
         if (!this._listeningToTabSelect) {
@@ -672,7 +675,7 @@ var WindowListener = {
           gBrowser.addEventListener("click", this);
         }
 
-        this.setCurrentRoomToken(roomToken);
+        this.currentRoomToken = roomToken;
         this._maybeShowBrowserSharingInfoBar(roomToken);
 
         // Get the first window Id for the listener.
@@ -715,7 +718,13 @@ var WindowListener = {
 
         this._listeningToTabSelect = false;
         this._browserSharePaused = false;
-        this.setCurrentRoomToken(null);
+        // call with false
+        this.currentRoomToken = false;
+
+        console.log("bar stopBrowserSharing set to null atempt this._currentRoomToken", this._currentRoomToken);
+        console.log("bar stopBrowserSharing this.currentRoomToken", this.currentRoomToken);
+
+
         this._sendTelemetryEventsIfNeeded();
       },
 
@@ -874,9 +883,7 @@ var WindowListener = {
       /**
        * Indicates if tab sharing is paused.
        * Set by tab pause button, startBrowserSharing and stopBrowserSharing.
-       * When link generator(owner) enters room we are sharing tabs by default.
-       * Set to default here as startBrowserSharing is called too late for
-       * infobar notification state.
+       * Defaults to false as link generator(owner) enters room we are sharing tabs.
        */
       _browserSharePaused: false,
 
@@ -884,15 +891,17 @@ var WindowListener = {
        * Shows an infobar notification at the top of the browser window that warns
        * the user that their browser tabs are being broadcasted through the current
        * conversation.
-       * @param  {Boolean} optional nonOwnerParticipants is true if a guest is present in the room
+       * @param  {String} currentRoomToken Room we are currently joined.
        * @return {void}
        */
       _maybeShowBrowserSharingInfoBar: function(currentRoomToken) {
         this._hideBrowserSharingInfoBar();
 
         let participantsCount = this.LoopRooms.getNumParticipants(currentRoomToken);
+        console.log("bar participantsCount", participantsCount);
 
         let initStrings = this._setInfoBarStrings(participantsCount > 1, this._browserSharePaused);
+        console.log("bar initStrings", initStrings);
 
         let box = gBrowser.getNotificationBox();
         let bar = box.appendNotification(
@@ -907,7 +916,10 @@ var WindowListener = {
             isDefault: false,
             callback: (event, buttonInfo, buttonNode) => {
               this._browserSharePaused = !this._browserSharePaused;
-              let stringObj = this._setInfoBarStrings(this.LoopRooms.getNumParticipants(this.getCurrentRoomToken()) > 1, this._browserSharePaused);
+              let guestPresent = this.LoopRooms.getNumParticipants(this.currentRoomToken) > 1;
+              let stringObj = this._setInfoBarStrings(guestPresent, this._browserSharePaused);
+              console.log("bar stringObj", stringObj);
+              console.log("bar stringObj.message", stringObj.message);
               bar.label = stringObj.message;
               bar.classList.toggle("paused", this._browserSharePaused);
               buttonNode.label = stringObj.label;
@@ -1012,7 +1024,7 @@ var WindowListener = {
             if (wasVisible) {
               // If the infobar was visible before, we should show it again after the
               // switch.
-              this._maybeShowBrowserSharingInfoBar(this.getCurrentRoomToken());
+              this._maybeShowBrowserSharingInfoBar(this.currentRoomToken);
             }
             break;
           }

@@ -1387,13 +1387,17 @@ this.MozLoopService = {
     LoopRooms.on("joined", (e, room, participant) => {
       // Don't alert if we're in the doNotDisturb mode, or the participant
       // is the owner - the content code deals with the rest of the sounds.
+      log.debug("bar joined participant", participant);
+
       if (MozLoopServiceInternal.doNotDisturb || participant.owner) {
         return;
       }
 
       let window = gWM.getMostRecentWindow("navigator:browser");
-      if (window.LoopUI.getCurrentRoomToken() && window.LoopUI.getCurrentRoomToken() === room.roomToken) {
-        window.LoopUI._maybeShowBrowserSharingInfoBar(window.LoopUI.getCurrentRoomToken());
+      if (window.LoopUI.currentRoomToken && window.LoopUI.currentRoomToken === room.roomToken) {
+        log.debug("bar Joined is Current Room room.roomToken", room.roomToken);
+        log.debug("bar Joined window.LoopUI.currentRoomToken", window.LoopUI.currentRoomToken);
+        window.LoopUI._maybeShowBrowserSharingInfoBar(window.LoopUI.currentRoomToken);
       }
 
       if (window) {
@@ -1415,7 +1419,6 @@ this.MozLoopService = {
           message: localizedString,
           selectTab: "rooms"
         });
-
       }
     });
 
@@ -1424,10 +1427,15 @@ this.MozLoopService = {
     LoopRooms.on("left", (e, room, participant) => {
       // Don't alert if we're in the doNotDisturb mode, or the participant
       // is the owner - the content code deals with the rest of the sounds.
+      log.debug("bar Left is CALLED room.roomToken", room.roomToken);
+      log.debug("bar Left !participant.owner", !participant.owner);
 
       let window = gWM.getMostRecentWindow("navigator:browser");
-      if (!participant.owner && window.LoopUI.getCurrentRoomToken() && window.LoopUI.getCurrentRoomToken() === room.roomToken) {
-        window.LoopUI._maybeShowBrowserSharingInfoBar(window.LoopUI.getCurrentRoomToken());
+      log.debug("bar Left window.LoopUI.currentRoomToken", window.LoopUI.currentRoomToken);
+
+      if (!participant.owner && window.LoopUI.currentRoomToken && window.LoopUI.currentRoomToken === room.roomToken) {
+        log.debug("bar Left is Current Room room.roomToken", room.roomToken);
+        window.LoopUI._maybeShowBrowserSharingInfoBar(window.LoopUI.currentRoomToken);
       }
     });
 

@@ -160,13 +160,15 @@ const kMessageHandlers = {
    * @param {Object}   message Message meant for the handler function, containing
    *                           the following parameters in its `data` property:
    *                           [
-   *                             {Number} windowId The window ID of the chat window
+   *                             {String} roomToken The room ID to start browser sharing and listeners.
    *                           ]
    * @param {Function} reply   Callback function, invoked with the result of this
    *                           message handler. The result will be sent back to
    *                           the senders' channel.
    */
   AddBrowserSharingListener: function(message, reply) {
+    MozLoopService.log.debug("bar AddBrowserSharingListener message.data", message.data);
+
     let win = Services.wm.getMostRecentWindow("navigator:browser");
     let browser = win && win.gBrowser.selectedBrowser;
     if (!win || !browser) {
@@ -187,14 +189,15 @@ const kMessageHandlers = {
       return;
     }
 
-    let [windowId] = message.data;
-    win.LoopUI.startBrowserSharing(windowId);
+    // get room token from message
+    let [roomToken] = message.data;
+    win.LoopUI.startBrowserSharing(roomToken);
 
     // Point new tab to load about:home to avoid accidentally sharing top sites.
     NewTabURL.override("about:home");
 
     gBrowserSharingWindows.add(Cu.getWeakReference(win));
-    gBrowserSharingListeners.add(windowId);
+    gBrowserSharingListeners.add(roomToken);
     reply();
   },
 
