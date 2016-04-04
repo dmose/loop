@@ -115,6 +115,7 @@ const containsParticipant = function(room, participant) {
 const checkForParticipantsUpdate = function(room, updatedRoom) {
   // Partially fetched rooms don't contain the participants list yet. Skip the
   // check for now.
+  MozLoopService.log.debug("bar room", room);
   if (!("participants" in room)) {
     return;
   }
@@ -1242,6 +1243,8 @@ this.LoopRooms = {
    *                         not specified, it will reset the cache.
    */
   _setRoomsCache: function(roomsCache, orig) {
+    MozLoopService.log.debug("bar roomsCache", roomsCache);
+    MozLoopService.log.debug("bar orig", orig);
     LoopRoomsInternal.rooms.clear();
     gDirty = true;
 
@@ -1251,6 +1254,7 @@ this.LoopRooms = {
 
         LoopRoomsInternal.rooms.set(key, value);
         if (orig) {
+          MozLoopService.log.debug("bar orig exists value", value);
           checkForParticipantsUpdate(value, orig);
         }
       }

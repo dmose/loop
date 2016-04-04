@@ -639,13 +639,13 @@ var WindowListener = {
        *                                   Set to false to clear roomToken at end of session cleanup.
        */
       set currentRoomToken(roomToken) {
-        console.log("bar currentRoomToken Called roomToken", roomToken);
+        // console.log("bar currentRoomToken Called roomToken", roomToken);
         this._currentRoomToken = roomToken ? roomToken : null;
-        console.log("bar currentRoomToken this._currentRoomToken", this._currentRoomToken);
+        // console.log("bar currentRoomToken this._currentRoomToken", this._currentRoomToken);
       },
 
       get currentRoomToken() {
-        console.log("bar currentRoomToken Return this._currentRoomToken", this._currentRoomToken);
+        // console.log("bar currentRoomToken Return this._currentRoomToken", this._currentRoomToken);
         return this._currentRoomToken;
       },
 
