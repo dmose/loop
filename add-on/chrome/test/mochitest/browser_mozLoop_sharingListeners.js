@@ -179,10 +179,10 @@ add_task(function* test_infoBar() {
     button.click();
     Assert.equal(bar.label, getLoopString("infobar_screenshare_stop_no_guest_message"), "The bar label should match when paused");
 
-    Assert.equal(bar.label, getLoopString("infobar_screenshare_stop_sharing_message2"), "The bar label should match when paused and guest in room");
+    // Assert.equal(bar.label, getLoopString("infobar_screenshare_stop_sharing_message2"), "The bar label should match when paused and guest in room");
 
-    button.click();
-    Assert.equal(bar.label, getLoopString("infobar_screenshare_browser_message2"), "The bar label should match when guest in room");
+    // button.click();
+    // Assert.equal(bar.label, getLoopString("infobar_screenshare_browser_message2"), "The bar label should match when guest in room");
 
   };
 

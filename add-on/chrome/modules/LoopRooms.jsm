@@ -603,11 +603,21 @@ var LoopRoomsInternal = {
    * @return {Number} Count of participants in the room.
    */
   getNumParticipants: function(roomToken) {
-    if (this.rooms.has(roomToken)) {
-      return this.rooms.get(roomToken).participants.length;
+    MozLoopService.log.debug("bar roomToken", roomToken);
+    MozLoopService.log.debug("bar this.rooms", this.rooms);
+    MozLoopService.log.debug("bar this.rooms.has(roomToken)", this.rooms.has(roomToken));
+    try {
+      if (this.rooms && this.rooms.has(roomToken)) {
+        return this.rooms.get(roomToken).participants.length;
+      }
+      return 0;
     }
-    // no room, log error and send back 0 to indicate none in room
-    throw new Error("No room found in current session.");
+    catch (ex) {
+      // Failed to extract domain, so don't record it.
+      // no room, log error and send back 0 to indicate none in room
+      // throw new Error("No room found in current session: ", ex);
+      return 0;
+    }
   },
 
   /**
@@ -1189,6 +1199,7 @@ this.LoopRooms = {
   },
 
   getNumParticipants: function(roomToken) {
+    MozLoopService.log.debug("bar external roomToken", roomToken);
     return LoopRoomsInternal.getNumParticipants(roomToken);
   },
 

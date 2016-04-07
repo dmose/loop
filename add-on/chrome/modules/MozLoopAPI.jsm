@@ -190,14 +190,14 @@ const kMessageHandlers = {
     }
 
     // get room token from message
-    let [roomToken] = message.data;
-    win.LoopUI.startBrowserSharing(roomToken);
+    let [windowId] = message.data;
+    win.LoopUI.startBrowserSharing(windowId);
 
     // Point new tab to load about:home to avoid accidentally sharing top sites.
     NewTabURL.override("about:home");
 
     gBrowserSharingWindows.add(Cu.getWeakReference(win));
-    gBrowserSharingListeners.add(roomToken);
+    gBrowserSharingListeners.add(windowId);
     reply();
   },
 

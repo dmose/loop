@@ -858,26 +858,27 @@ var WindowListener = {
        */
 
       _setInfoBarStrings: function(nonOwnerParticipants, sharePaused) {
-        let infoStrings = {};
+        let message;
         if (nonOwnerParticipants) {
           let stopSharingMessage = this._getString("infobar_screenshare_stop_sharing_message2");
           let sharingMessage = this._getString("infobar_screenshare_browser_message3");
           // more than one participant
-          infoStrings.message = sharePaused ? stopSharingMessage : sharingMessage;
+          message = sharePaused ? stopSharingMessage : sharingMessage;
         } else {
           // empty room
           let stopSharingNoGuestMessage = this._getString("infobar_screenshare_stop_no_guest_message");
           let sharingNoGuestMessage = this._getString("infobar_screenshare_no_guest_message");
-          infoStrings.message = sharePaused ? stopSharingNoGuestMessage : sharingNoGuestMessage;
+          message = sharePaused ? stopSharingNoGuestMessage : sharingNoGuestMessage;
         }
-        if (sharePaused) {
-          infoStrings.label = this._getString("infobar_button_restart_label2");
-          infoStrings.accesskey = this._getString("infobar_button_restart_accesskey");
-        } else {
-          infoStrings.label = this._getString("infobar_button_stop_label2");
-          infoStrings.accesskey = this._getString("infobar_button_stop_accesskey");
-        }
-        return infoStrings;
+        // let infoStrings = {};
+        // infoStrings.message = message;
+        let label = sharePaused ? this._getString("infobar_button_restart_label2") : this._getString("infobar_button_stop_label2");
+        // infoStrings.label = label;
+        let accessKey = sharePaused ? this._getString("infobar_button_restart_accesskey") : this._getString("infobar_button_stop_accesskey");
+        // infoStrings.accesskey = accessKey;
+
+        return { message: message, label: label, accesskey: accessKey };
+        // return infoStrings;
       },
 
       /**
