@@ -1387,10 +1387,6 @@ function startup(data) {
 
   Services.ppmm.loadProcessScript("chrome://loop/content/loop-content-process.js", true);
 
-  // register about: handlers
-  AboutLoop.conversation.register();
-  AboutLoop.panel.register();
-
   createLoopButton();
 
   // Attach to hidden window (for OS X).
