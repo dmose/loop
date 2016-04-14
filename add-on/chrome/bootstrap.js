@@ -290,7 +290,6 @@ var WindowListener = {
               if (!("participants" in room)) {
                 continue;
               }
-              console.log("bar room.participants", room.participants);
               let numNonOwners = room.participants.filter(participant => !participant.owner).length;
               if (!numNonOwners) {
                 continue;
@@ -710,9 +709,6 @@ var WindowListener = {
         this._browserSharePaused = false;
         this._currentRoomToken = null;
 
-        console.log("bar stopBrowserSharing this._currentRoomToken", this._currentRoomToken);
-
-
         this._sendTelemetryEventsIfNeeded();
       },
 
@@ -885,10 +881,8 @@ var WindowListener = {
         this._hideBrowserSharingInfoBar();
 
         let participantsCount = this.LoopRooms.getNumParticipants(currentRoomToken);
-        console.log("bar participantsCount", participantsCount);
 
         let initStrings = this._setInfoBarStrings(participantsCount > 1, this._browserSharePaused);
-        console.log("bar initStrings", initStrings);
 
         let box = gBrowser.getNotificationBox();
         let bar = box.appendNotification(
@@ -905,8 +899,6 @@ var WindowListener = {
               this._browserSharePaused = !this._browserSharePaused;
               let guestPresent = this.LoopRooms.getNumParticipants(this._currentRoomToken) > 1;
               let stringObj = this._setInfoBarStrings(guestPresent, this._browserSharePaused);
-              console.log("bar stringObj", stringObj);
-              console.log("bar stringObj.message", stringObj.message);
               bar.label = stringObj.message;
               bar.classList.toggle("paused", this._browserSharePaused);
               buttonNode.label = stringObj.label;
