@@ -1084,6 +1084,7 @@ var MozLoopServiceInternal = {
               mm.removeMessageListener(name, listeners[name]);
             }
             listeners = {};
+
             windowCloseCallback();
 
             if (conversationWindowData.type == "room") {
@@ -1387,24 +1388,18 @@ this.MozLoopService = {
     LoopRooms.on("joined", (e, room, participant) => {
       // Don't alert if we're in the doNotDisturb mode, or the participant
       // is the owner - the content code deals with the rest of the sounds.
-      log.debug("bar joined participant", participant);
-
       if (MozLoopServiceInternal.doNotDisturb || participant.owner) {
         return;
       }
 
       let window = gWM.getMostRecentWindow("navigator:browser");
-      if (window.LoopUI.currentRoomToken && window.LoopUI.currentRoomToken === room.roomToken) {
-        log.debug("bar Joined is Current Room room.roomToken", room.roomToken);
-        log.debug("bar Joined window.LoopUI.currentRoomToken", window.LoopUI.currentRoomToken);
-        window.LoopUI._maybeShowBrowserSharingInfoBar(window.LoopUI.currentRoomToken);
-      }
-
       if (window) {
+        // The participant that joined isn't necessarily included in room.participants (depending on
+        // when the broadcast happens) so concatenate.
+        let isOwnerInRoom = room.participants.concat(participant).some(p => p.owner);
         let bundle = MozLoopServiceInternal.localizedStrings;
 
         let localizedString;
-        let isOwnerInRoom = room.participants.some(p => p.owner);
         if (isOwnerInRoom) {
           localizedString = bundle.get("rooms_room_joined_owner_connected_label2");
         } else {
@@ -1423,21 +1418,6 @@ this.MozLoopService = {
     });
 
     LoopRooms.on("joined", this.maybeResumeTourOnRoomJoined.bind(this));
-
-    LoopRooms.on("left", (e, room, participant) => {
-      // Don't alert if we're in the doNotDisturb mode, or the participant
-      // is the owner - the content code deals with the rest of the sounds.
-      log.debug("bar Left is CALLED room.roomToken", room.roomToken);
-      log.debug("bar Left !participant.owner", !participant.owner);
-
-      let window = gWM.getMostRecentWindow("navigator:browser");
-      log.debug("bar Left window.LoopUI.currentRoomToken", window.LoopUI.currentRoomToken);
-
-      if (!participant.owner && window.LoopUI.currentRoomToken && window.LoopUI.currentRoomToken === room.roomToken) {
-        log.debug("bar Left is Current Room room.roomToken", room.roomToken);
-        window.LoopUI._maybeShowBrowserSharingInfoBar(window.LoopUI.currentRoomToken);
-      }
-    });
 
     // If there's no guest room created and the user hasn't
     // previously authenticated then skip registration.

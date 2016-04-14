@@ -1266,7 +1266,7 @@ this.LoopRooms = {
         LoopRoomsInternal.rooms.set(key, value);
         if (orig) {
           MozLoopService.log.debug("bar orig exists value", value);
-          checkForParticipantsUpdate(value, orig);
+          checkForParticipantsUpdate(orig, value);
         }
       }
       gGetAllPromise = null;

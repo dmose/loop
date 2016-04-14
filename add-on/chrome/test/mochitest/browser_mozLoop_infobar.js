@@ -16,8 +16,8 @@ var fakeRoomListGuestOnly = new Map([[ROOM_TOKEN, {
     account: "fake.user@null.com",
     owner: true
   }]
-}
-]]);
+}]]);
+
 var fakeRoomListwithParticipants = new Map([[ROOM_TOKEN, {
   roomToken: ROOM_TOKEN,
   participants: [{
@@ -30,8 +30,7 @@ var fakeRoomListwithParticipants = new Map([[ROOM_TOKEN, {
     displayName: "Guest",
     owner: false
   }]
-}
-]]);
+}]]);
 
 function promiseStartBrowserSharing() {
   return new Promise(resolve => {
@@ -103,6 +102,54 @@ add_task(function* test_infobar_with_guest() {
 
   Assert.equal(bar.label, getLoopString("infobar_screenshare_browser_message3"),
     "The bar label should be assuming guests are in the room");
+
+  stopBrowserSharing();
+});
+
+add_task(function* test_infobar_room_join() {
+  LoopRooms._setRoomsCache(fakeRoomListGuestOnly);
+
+  yield promiseStartBrowserSharing();
+
+  let bar = getInfoBar();
+
+  assertInfoBarVisible(bar);
+
+  Assert.equal(bar.label, getLoopString("infobar_screenshare_no_guest_message"),
+    "The bar label should be for no guests");
+
+  LoopRooms._setRoomsCache(fakeRoomListwithParticipants,
+    fakeRoomListGuestOnly.get(ROOM_TOKEN));
+
+  // Currently the bar gets recreated, so we need to re-get the bar element.
+  bar = getInfoBar();
+
+  Assert.equal(bar.label, getLoopString("infobar_screenshare_browser_message3"),
+    "The bar label should be assuming guests are in the room");
+
+  stopBrowserSharing();
+});
+
+add_task(function* test_infobar_room_leave() {
+  LoopRooms._setRoomsCache(fakeRoomListwithParticipants);
+
+  yield promiseStartBrowserSharing();
+
+  let bar = getInfoBar();
+
+  assertInfoBarVisible(bar);
+
+  Assert.equal(bar.label, getLoopString("infobar_screenshare_browser_message3"),
+    "The bar label should be assuming guests are in the room");
+
+  LoopRooms._setRoomsCache(fakeRoomListGuestOnly,
+    fakeRoomListwithParticipants.get(ROOM_TOKEN));
+
+  // Currently the bar gets recreated, so we need to re-get the bar element.
+  bar = getInfoBar();
+
+  Assert.equal(bar.label, getLoopString("infobar_screenshare_no_guest_message"),
+    "The bar label should be for no guests");
 
   stopBrowserSharing();
 });

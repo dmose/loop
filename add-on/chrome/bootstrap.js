@@ -662,6 +662,11 @@ var WindowListener = {
 
           titleChangedListener = this.handleDOMTitleChanged.bind(this);
 
+          this._roomsListener = this.handleRoomJoinedOrLeft.bind(this);
+
+          this.LoopRooms.on("joined", this._roomsListener);
+          this.LoopRooms.on("left", this._roomsListener);
+
           // Watch for title changes as opposed to location changes as more
           // metadata about the page is available when this event fires.
           this.mm.addMessageListener("loop@mozilla.org:DOMTitleChanged",
@@ -704,6 +709,8 @@ var WindowListener = {
 
         this._hideBrowserSharingInfoBar();
         gBrowser.tabContainer.removeEventListener("TabSelect", this);
+        this.LoopRooms.off("joined", this._roomsListener);
+        this.LoopRooms.off("left", this._roomsListener);
 
         if (titleChangedListener) {
           this.mm.removeMessageListener("loop@mozilla.org:DOMTitleChanged",
@@ -721,7 +728,6 @@ var WindowListener = {
         // call with false
         this.currentRoomToken = false;
 
-        console.log("bar stopBrowserSharing set to null atempt this._currentRoomToken", this._currentRoomToken);
         console.log("bar stopBrowserSharing this.currentRoomToken", this.currentRoomToken);
 
 
@@ -985,6 +991,18 @@ var WindowListener = {
          // Get the first window Id for the listener.
         this.LoopAPI.broadcastPushMessage("BrowserSwitch",
           gBrowser.selectedBrowser.outerWindowID);
+      },
+
+      /**
+       * Handles updating of the sharing infobar when the room participants
+       * change.
+       */
+      handleRoomJoinedOrLeft: function() {
+        // Don't attempt to show it if we're not actively sharing.
+        if (!this._listeningToTabSelect) {
+          return;
+        }
+        this._maybeShowBrowserSharingInfoBar(this.currentRoomToken);
       },
 
       /**
