@@ -836,6 +836,7 @@ loop.store.ActiveRoomStore = (function(mozL10n) {
         });
         return;
       }
+
       this.setStoreState({
         remoteSrcMediaElement: null
       });
