@@ -613,8 +613,7 @@ var LoopRoomsInternal = {
       return 0;
     }
     catch (ex) {
-      // Failed to extract domain, so don't record it.
-      // no room, log error and send back 0 to indicate none in room
+      // No room, log error and send back 0 to indicate none in room.
       // throw new Error("No room found in current session: ", ex);
       return 0;
     }

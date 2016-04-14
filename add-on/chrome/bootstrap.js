@@ -633,23 +633,6 @@ var WindowListener = {
       },
 
       /**
-       * Set the current room token
-       *
-       * @param {(String|False)} roomToken  The current room that the link generator is connected to.
-       *                                   Set to false to clear roomToken at end of session cleanup.
-       */
-      set currentRoomToken(roomToken) {
-        // console.log("bar currentRoomToken Called roomToken", roomToken);
-        this._currentRoomToken = roomToken ? roomToken : null;
-        // console.log("bar currentRoomToken this._currentRoomToken", this._currentRoomToken);
-      },
-
-      get currentRoomToken() {
-        // console.log("bar currentRoomToken Return this._currentRoomToken", this._currentRoomToken);
-        return this._currentRoomToken;
-      },
-
-      /**
        * Start listening to selected tab changes and notify any content page that's
        * listening to 'BrowserSwitch' push messages.
        *
@@ -680,7 +663,7 @@ var WindowListener = {
           gBrowser.addEventListener("click", this);
         }
 
-        this.currentRoomToken = roomToken;
+        this._currentRoomToken = roomToken;
         this._maybeShowBrowserSharingInfoBar(roomToken);
 
         // Get the first window Id for the listener.
@@ -725,10 +708,9 @@ var WindowListener = {
 
         this._listeningToTabSelect = false;
         this._browserSharePaused = false;
-        // call with false
-        this.currentRoomToken = false;
+        this._currentRoomToken = null;
 
-        console.log("bar stopBrowserSharing this.currentRoomToken", this.currentRoomToken);
+        console.log("bar stopBrowserSharing this._currentRoomToken", this._currentRoomToken);
 
 
         this._sendTelemetryEventsIfNeeded();
@@ -866,25 +848,23 @@ var WindowListener = {
       _setInfoBarStrings: function(nonOwnerParticipants, sharePaused) {
         let message;
         if (nonOwnerParticipants) {
-          let stopSharingMessage = this._getString("infobar_screenshare_stop_sharing_message2");
-          let sharingMessage = this._getString("infobar_screenshare_browser_message3");
-          // more than one participant
-          message = sharePaused ? stopSharingMessage : sharingMessage;
+          // More than just the owner in the room.
+          message = this._getString(
+            sharePaused ? "infobar_screenshare_stop_sharing_message2" :
+                          "infobar_screenshare_browser_message3");
+
         } else {
-          // empty room
-          let stopSharingNoGuestMessage = this._getString("infobar_screenshare_stop_no_guest_message");
-          let sharingNoGuestMessage = this._getString("infobar_screenshare_no_guest_message");
-          message = sharePaused ? stopSharingNoGuestMessage : sharingNoGuestMessage;
+          // Just the owner in the room.
+          message = this._getString(
+            sharePaused ? "infobar_screenshare_stop_no_guest_message" :
+                          "infobar_screenshare_no_guest_message");
         }
-        // let infoStrings = {};
-        // infoStrings.message = message;
-        let label = sharePaused ? this._getString("infobar_button_restart_label2") : this._getString("infobar_button_stop_label2");
-        // infoStrings.label = label;
-        let accessKey = sharePaused ? this._getString("infobar_button_restart_accesskey") : this._getString("infobar_button_stop_accesskey");
-        // infoStrings.accesskey = accessKey;
+        let label = this._getString(
+          sharePaused ? "infobar_button_restart_label2" : "infobar_button_stop_label2");
+        let accessKey = this._getString(
+          sharePaused ? "infobar_button_restart_accesskey" : "infobar_button_stop_accesskey");
 
         return { message: message, label: label, accesskey: accessKey };
-        // return infoStrings;
       },
 
       /**
@@ -923,7 +903,7 @@ var WindowListener = {
             isDefault: false,
             callback: (event, buttonInfo, buttonNode) => {
               this._browserSharePaused = !this._browserSharePaused;
-              let guestPresent = this.LoopRooms.getNumParticipants(this.currentRoomToken) > 1;
+              let guestPresent = this.LoopRooms.getNumParticipants(this._currentRoomToken) > 1;
               let stringObj = this._setInfoBarStrings(guestPresent, this._browserSharePaused);
               console.log("bar stringObj", stringObj);
               console.log("bar stringObj.message", stringObj.message);
@@ -1002,7 +982,7 @@ var WindowListener = {
         if (!this._listeningToTabSelect) {
           return;
         }
-        this._maybeShowBrowserSharingInfoBar(this.currentRoomToken);
+        this._maybeShowBrowserSharingInfoBar(this._currentRoomToken);
       },
 
       /**
@@ -1043,7 +1023,7 @@ var WindowListener = {
             if (wasVisible) {
               // If the infobar was visible before, we should show it again after the
               // switch.
-              this._maybeShowBrowserSharingInfoBar(this.currentRoomToken);
+              this._maybeShowBrowserSharingInfoBar(this._currentRoomToken);
             }
             break;
           }
