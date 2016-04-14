@@ -191,6 +191,8 @@ const kMessageHandlers = {
 
     // get room token from message
     let [windowId] = message.data;
+    // For rooms, the windowId === roomToken. If we change the type of place we're
+    // sharing from in the future, we may need to change this.
     win.LoopUI.startBrowserSharing(windowId);
 
     // Point new tab to load about:home to avoid accidentally sharing top sites.
