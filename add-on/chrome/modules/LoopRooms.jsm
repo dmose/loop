@@ -610,7 +610,7 @@ var LoopRoomsInternal = {
     }
     catch (ex) {
       // No room, log error and send back 0 to indicate none in room.
-      // throw new Error("No room found in current session: ", ex);
+      MozLoopService.log.error("No room found in current session: ", ex);
       return 0;
     }
   },

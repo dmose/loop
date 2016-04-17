@@ -633,7 +633,9 @@ var WindowListener = {
 
       /**
        * Start listening to selected tab changes and notify any content page that's
-       * listening to 'BrowserSwitch' push messages.
+       * listening to 'BrowserSwitch' push messages.  Also sets up a "joined"
+       * and "left" listener for LoopRooms so that we can toggle the infobar
+       * sharing messages when people come and go.
        *
        * @param {(String)} roomToken  The current room that the link generator is connecting to.
        */
