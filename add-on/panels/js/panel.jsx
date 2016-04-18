@@ -472,7 +472,7 @@ loop.panel = (function(_, mozL10n) {
         return;
       }
 
-      this.props.dispatcher.dispatch(new sharedActions.OpenRoom({
+      /*this.props.dispatcher.dispatch(new sharedActions.OpenRoom({
         roomToken: this.props.room.roomToken
       }));
 
@@ -490,7 +490,9 @@ loop.panel = (function(_, mozL10n) {
           loop.request("OpenURL", contextURL);
         }
         this.closeWindow();
-      }.bind(this));
+      }.bind(this));*/
+      loop.request("OpenURL", "about:looptoc#" + this.props.room.roomToken);
+      this.closeWindow();
     },
 
     handleClick: function(e) {
