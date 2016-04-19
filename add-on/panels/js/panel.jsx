@@ -472,6 +472,8 @@ loop.panel = (function(_, mozL10n) {
         return;
       }
 
+      loop.request("loadSidebar", this.props.room.roomToken);
+
       /*this.props.dispatcher.dispatch(new sharedActions.OpenRoom({
         roomToken: this.props.room.roomToken
       }));

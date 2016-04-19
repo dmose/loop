@@ -199,6 +199,13 @@ const kMessageHandlers = {
     reply();
   },
 
+  LoadSidebar: function(message, reply) {
+    let win = Services.wm.getMostRecentWindow("navigator:browser");
+    let [roomToken] = message.data;
+    win.LoopUI.loadSidebar(roomToken);
+    reply();
+  },
+
   /**
    * Creates a layout for the remote cursor on the browser chrome,
    * and positions it on the received coordinates.
