@@ -520,7 +520,9 @@ clean:
 .PHONY: cleanbuild
 cleanbuild: clean build
 
-test: lint karma functional
+# XXX akita this should also depend on "functional", but we're disabling that
+# while there's still a lot of churn
+test: lint karma
 
 .PHONY: runserver
 runserver: remove_old_config
