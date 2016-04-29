@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/.  -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Loop desktop-local mocha tests</title>
+  <link rel="stylesheet" media="all" href="/test/vendor/mocha.css">
+</head>
+<body>
+  <div id="mocha">
+    <p><a href="../">Index</a></p>
+  </div>
+  <div id="messages"></div>
+  <div id="fixtures"></div>
+  <script src="/shared/vendor/lodash.js"></script>
+  <script src="/shared/test/loop_mocha_utils.js"></script>
+  <script>
+    LoopMochaUtils.trapErrors();
+  </script>
+
+  <!-- libs -->
+
+  <!-- test dependencies -->
+  <script src="/test/vendor/mocha.js"></script>
+  <script src="/test/vendor/chai.js"></script>
+  <script src="/test/vendor/chai-as-promised.js"></script>
+  <script src="/test/vendor/sinon.js"></script>
+
+  <script>
+    /*global chai,mocha */
+    chai.config.includeStack = true;
+    mocha.setup({ui: 'bdd', timeout: 10000});
+  </script>
+
+  <!-- App scripts -->
+  <script src="../../loop-content-process.js"></script>
+
+  <!-- Test scripts -->
+  <script src="contentProcess_test.js"></script>
+  <script>
+    LoopMochaUtils.addErrorCheckingTests();
+    LoopMochaUtils.runTests();
+  </script>
+</body>
+</html>

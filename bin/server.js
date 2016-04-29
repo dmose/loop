@@ -85,6 +85,8 @@ app.use("/", express.static(standaloneContentDir));
 app.use("/ui", express.static(path.join(topDir, "built", "ui")));
 app.use("/add-on", express.static(
   path.join(topDir, "built", "add-on", "chrome", "content")));
+app.use("/add-on", express.static(
+  path.join(topDir, "built", "add-on")));
 
 // We want to make the top-level test directory available...
 app.use("/test", express.static(path.join(topDir, "test")));
