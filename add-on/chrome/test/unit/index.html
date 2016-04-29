@@ -5,12 +5,12 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Loop desktop-local mocha tests</title>
+  <title>Loop chrome mocha unit tests</title>
   <link rel="stylesheet" media="all" href="/test/vendor/mocha.css">
 </head>
 <body>
   <div id="mocha">
-    <p><a href="../">Index</a></p>
+    <p><a href="/test/">Index</a></p>
   </div>
   <div id="messages"></div>
   <div id="fixtures"></div>
@@ -35,9 +35,10 @@
   </script>
 
   <!-- App scripts -->
-  <script src="../../loop-content-process.js"></script>
+  <script src="/add-on/top-level/loop-content-process.js"></script>
 
   <!-- Test scripts -->
+  <!-- XXX version of JS -->
   <script src="contentProcess_test.js"></script>
   <script>
     LoopMochaUtils.addErrorCheckingTests();

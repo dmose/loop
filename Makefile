@@ -355,6 +355,7 @@ add-on: node_modules \
 	      $(BUILT)/add-on/chrome/content/preferences/prefs.js
 	mkdir -p $(BUILT)/$@
 	$(RSYNC) $@/chrome/bootstrap.js $(BUILT)/$@
+	$(RSYNC) $@/chrome/loop-content-process.js $(BUILT)/$@
 	mkdir -p $(BUILT)/$@/chrome/content/panels
 	$(RSYNC) $@/panels $(BUILT)/$@/chrome/content
 	mkdir -p $(BUILT)/$@/chrome/content/modules
