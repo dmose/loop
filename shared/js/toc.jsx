@@ -287,15 +287,15 @@ loop.shared.toc = (function(mozL10n) {
           <div className="room-user" data-name={this.props.page.userName}>
             <span>{this.props.page.userName[0].toUpperCase()}</span>
           </div>
-          <img className="tile-screenshot" src="" />
+          <img className="tile-screenshot" src={this.props.tile.thumbnail_img} />
           <div className="tile-info">
             <a
               className="tile-name"
               href={this.props.page.url}
               rel="noopener noreferrer"
               target="_blank"
-              title={this.props.page.description}>
-                {this.props.page.title}
+              title={this.props.tile.title}>
+                {this.props.tile.title}
             </a>
             <h3 className="tile-url">{this.props.page.url}</h3>
           </div>
