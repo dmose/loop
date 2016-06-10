@@ -238,13 +238,21 @@ loop.shared.toc = (function(mozL10n) {
         return;
       }
 
+      // XXX akita: Code below is just for testing purpose
+      var btn = this.refs.addSiteBtn;
+      btn.textContent = "Loading...";
+      btn.disabled = true;
+
       loop.shared.utils.getPageMetadata(url).then(result => {
         this.props.dispatcher.dispatch(new sharedActions.ShowSnackbar({
           label: mozL10n.get("snackbar_page_added")
         }));
         this.props.handleAddUrlClick(result);
-      }).catch((error) => {
-        console.error("getPageMetadata or thenable rejection: ", error);
+      }).catch(() => {
+        // XXX akita: Code below is just for testing purpose
+        btn.textContent = "Add site";
+        btn.disabled = false;
+
         this.props.dispatcher.dispatch(new sharedActions.ShowSnackbar({
           label: mozL10n.get("snackbar_page_not_added")
         }));
@@ -256,7 +264,7 @@ loop.shared.toc = (function(mozL10n) {
         <div className="room-panel-add-url">
           <h2>{'Add a site to the room'}</h2>
           <input placeholder="http://..." ref="siteUrl" type="text" />
-          <button onClick={this.handleClick}>{'Add site'}</button>
+          <button onClick={this.handleClick} ref="addSiteBtn">{'Add site'}</button>
         </div>
       );
     }
@@ -303,15 +311,15 @@ loop.shared.toc = (function(mozL10n) {
           <div className="room-user" data-name={this.props.page.userName}>
             <span>{this.props.page.userName[0].toUpperCase()}</span>
           </div>
-          <img className="tile-screenshot" src={this.props.tile.thumbnail_img} />
+          <img className="tile-screenshot" src={this.props.page.thumbnail_img} />
           <div className="tile-info">
             <a
               className="tile-name"
               href={this.props.page.url}
               rel="noopener noreferrer"
               target="_blank"
-              title={this.props.tile.title}>
-                {this.props.tile.title}
+              title={this.props.page.title}>
+                {this.props.page.title}
             </a>
             <h3 className="tile-url">{this.props.page.url}</h3>
           </div>
