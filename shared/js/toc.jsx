@@ -243,7 +243,8 @@ loop.shared.toc = (function(mozL10n) {
           label: mozL10n.get("snackbar_page_added")
         }));
         this.props.handleAddUrlClick(result);
-      }).catch(() => {
+      }).catch((error) => {
+        console.error("getPageMetadata or thenable rejection: ", error);
         this.props.dispatcher.dispatch(new sharedActions.ShowSnackbar({
           label: mozL10n.get("snackbar_page_not_added")
         }));
